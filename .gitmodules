@@ -1,0 +1,6 @@
+[submodule "romanesco"]
+	path = romanesco
+	url = https://github.com/Kitware/romanesco.git
+[submodule "minerva"]
+	path = minerva
+	url = https://github.com/Kitware/minerva.git
