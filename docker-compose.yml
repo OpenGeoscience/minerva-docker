@@ -1,0 +1,14 @@
+mongodb:
+    image: mongo:3.0
+    ports:
+        - "27017"
+    volumes:
+        - "data/db"
+
+minerva:
+    image: jbeezley/minerva
+    ports:
+        - "8080:8080"
+    links:
+        - "mongodb:mongodb"
+    command: -d mongodb://mongodb:27017/girder
