@@ -3,10 +3,11 @@ mongodb:
     ports:
         - "27017"
     volumes:
-        - "data/db"
+        - "/data/db"
 
 minerva:
-    image: jbeezley/minerva
+    build: .
+    dockerfile: Dockerfile
     ports:
         - "8080:8080"
     links:
