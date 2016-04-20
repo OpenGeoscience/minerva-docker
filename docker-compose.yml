@@ -12,4 +12,8 @@ minerva:
         - "8080:8080"
     links:
         - "mongodb:mongodb"
+    environment:
+        - BSVE_USERNAME=PLACEHOLDER
+        - BSVE_APIKEY=PLACEHOLDER
+        - BSVE_SECRETKEY=PLACEHOLDER
     command: -d mongodb://mongodb:27017/girder

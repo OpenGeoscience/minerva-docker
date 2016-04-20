@@ -10,8 +10,19 @@ Clone this repo.  Either initialize the git submodules for Minerva and Romanesco
 
     git clone https://github.com/OpenGeoscience/minerva-docker.git --recursive
     cd minerva-docker
+
+Set the three BSVE environment variables in docker-compose.yml to the correct values for a
+set of working BSVE credentials.  This will be the account that Minerva uses to connect with
+the BSVE.
+
     docker-compose build
     docker-compose up
+
+Now that Minerva is running, load the page.  At this point you can register and admin user with Girder, the
+software that powers Minerva.  Go to the Admin console, then the Plugins page, enable the Minerva plugin
+and restart the server.  Once the server is restarted, return to the root page in the browser address bar.  You
+should see the Minerva application at this point, and you will still be logged in as the admin user you created
+for Girder.
 
 #### License
 
