@@ -18,11 +18,9 @@ the BSVE.
     docker-compose build
     docker-compose up
 
-Now that Minerva is running, load the page.  At this point you can register and admin user with Girder, the
-software that powers Minerva.  Go to the Admin console, then the Plugins page, enable the Minerva plugin
-and restart the server.  Once the server is restarted, return to the root page in the browser address bar.  You
-should see the Minerva application at this point, and you will still be logged in as the admin user you created
-for Girder.
+Now that Minerva is running, load the page.  At this point you can register an admin user with Girder, the
+software that powers Minerva.  Now that you are logged in with the admin user, go to the Admin console,
+then the Plugins page, enable the Minerva plugin and restart the server.  Once the server is restarted, return to the root page in the browser address bar and refresh the page.  You should see the Minerva application at this point, and you will still be logged in as the admin user you created for Girder.
 
 #### License
 
