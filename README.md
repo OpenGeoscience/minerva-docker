@@ -10,7 +10,7 @@ Clone this repo.  Either initialize the git submodules for Minerva and Romanesco
 
     git clone https://github.com/OpenGeoscience/minerva-docker.git --recursive
     cd minerva-docker
-    docker build -t minerva-docker .
+    docker-compose build
     docker-compose up
 
 #### License
