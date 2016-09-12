@@ -28,6 +28,16 @@ class Authentication(Resource):
         .errorResponse('Invalid BSVE login', 403)
     )
     def authenticate(self, params):
+        """Authenticate a user with a BSVE login token.
+
+        This endpoint bypasses the normal authentication scheme and makes
+        it possible to login as a user without his/her password.  This
+        is a security vulnerability if a user creates an account with
+        a login name that is later automatically assigned by the escaping
+        mechanism defined in ``_generatePassword``.  Only auto-generated
+        accounts should be allowed when this plugin is enabled and
+        registration should be set to closed.
+        """
         authHeader = cherrypy.request.headers.get('Authorization')
         if not authHeader or not authHeader[0:6] == 'Basic ':
             raise RestException('Use HTTP Basic Authentication', 401)
@@ -103,7 +113,9 @@ class Authentication(Resource):
         """Generate a login name from an email address."""
         user = email.lower()
 
-        # poor man's escaping, probably not terribly secure
+        # This is escape characters that are not valid as girder logins.
+        # The goal is to make sure that no two unique email addresses can
+        # result in the same login name.
         user = user.replace('-', '---')
         user = user.replace('@', '-at-')
         user = user.replace('_', '-u-')
