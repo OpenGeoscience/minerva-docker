@@ -189,7 +189,10 @@ minerva.events.on('g:appload.after', function () {
 
             // log in to minerva using bsve credentials
             girder.restRequest({
-                path: 'bsve/authentication'
+                path: 'bsve/authentication',
+                data: {
+                    apiroot: 'https://qa.bsvecosystem.net/api'
+                }
             }).then(
                 start_session
             ).then(
