@@ -187,17 +187,22 @@ minerva.events.on('g:appload.after', function () {
             console.log('GeoViz 0.0.46');
             console.log(user);
 
+            var auth = 'Basic ' + window.btoa(user + ':' + authTicket);
+
             // log in to minerva using bsve credentials
             girder.restRequest({
                 path: 'bsve/authentication',
                 data: {
                     apiroot: 'https://qa.bsvecosystem.net/api'
+                },
+                headers: {
+                    'Authorization': auth
                 }
             }).then(
                 start_session
             ).then(
                 bsve_search_handler
-            ).catch(error_handler);
+            ).then(undefined, error_handler);
         });
     } else {
         console.log('No BSVE object defined');
