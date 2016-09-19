@@ -124,7 +124,7 @@ minerva.events.on('g:appload.after', function () {
     }
 
     function start_session(resp) {
-        var user = resp.user;
+        var user = resp;
         var folder;
         var session = new minerva.models.SessionModel();
         // get the minerva folder id
@@ -156,15 +156,15 @@ minerva.events.on('g:appload.after', function () {
                 folderId: folder._id,
                 name: 'default',
                 description: 'Default session for the BSVE'
-            });
-            session.createSessionMetadata();
-            session.on('g:saved', function () {
-                defer.resolve(session.attributes);
-            });
+            }).once('g:saved', function () {
+                session.once('m:session_saved', function () {
+                    defer.resolve(session.attributes);
+                }).createSessionMetadata();
+            }).save();
             return defer.promise();
         }).then(function (resp) {
             session.set(resp);
-            console.log(resp);
+            minerva.router.navigate('session/' + session.id, {trigger: true});
         });
     }
 
