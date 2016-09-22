@@ -1,4 +1,21 @@
 minerva.events.on('g:appload.after', function () {
+
+    function init_reference_data(collection) {
+
+        var wmsSource = new minerva.models.WmsSourceModel({});
+        wmsSource.on('m:sourceReceived', function (datasets) {
+            _.each(datasets, function (dataset) {
+                collection.add(dataset, {silent: true});
+                collection.trigger('add');
+            });
+        }).createSource({
+            name: 'Reference',
+            baseURL: 'http://50.112.224.210/geoserver/ows',
+            username: '',
+            password: ''
+        });
+    }
+
     function bsve_search_handler() {
         /*
          * Create a search submit handler.
@@ -77,8 +94,7 @@ minerva.events.on('g:appload.after', function () {
                 });
             }
 
-            function getGeoJSON(query, dataSourceName)
-            {
+            function getGeoJSON(query, dataSourceName) {
                 console.log('GeoViz calling getGeoJSON');
                 BSVE.api.get('/api/search/util/geomap/geojson/' + query.requestId + '/all', function(response)
                 {
@@ -164,6 +180,19 @@ minerva.events.on('g:appload.after', function () {
             return defer.promise();
         }).then(function (resp) {
             session.set(resp);
+            girder.events.once('g:navigateTo', function (view, obj) {
+                var datasets = obj.datasetsCollection;
+                var needReference = true;
+                datasets.each(function (dataset) {
+                    var mm = dataset.attributes.meta.minerva;
+                    if (mm.source && mm.source.layer_source === 'Reference') {
+                        needReference = false;
+                    }
+                });
+                if (needReference) {
+                    init_reference_data(datasets);
+                }
+            });
             minerva.router.navigate('session/' + session.id, {trigger: true});
         });
     }
