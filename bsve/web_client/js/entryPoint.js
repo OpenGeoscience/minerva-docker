@@ -142,7 +142,14 @@ minerva.events.on('g:appload.after', function () {
     function start_session(resp) {
         var user = resp;
         var folder;
+
+        girder.currentUser = new girder.models.UserModel(user);
+        girder.currentToken = user.authToken.token;
+        girder.events.trigger('g:login.success', user);
+        girder.events.trigger('g:login', user);
+
         var session = new minerva.models.SessionModel();
+
         // get the minerva folder id
         girder.restRequest({
             path: 'minerva_session/folder',
