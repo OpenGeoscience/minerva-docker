@@ -204,6 +204,15 @@ minerva.events.on('g:appload.after', function () {
         });
     }
 
+    function remove_bsve_css() {
+        $('link').each(function (i, el) {
+            var $el = $(el);
+            if ($el.prop('href').search('harbinger') >= 0) {
+                $el.remove();
+            }
+        });
+    }
+
     function error_handler(resp) {
         console.error('Minerva login failed with:');
         console.error(resp);
@@ -212,6 +221,8 @@ minerva.events.on('g:appload.after', function () {
     if (typeof BSVE !== 'undefined') {
         console.log('BSVE JS object exists');
         BSVE.init(function() {
+            remove_bsve_css();
+
             console.log('BSVE.init callback');
             console.log(BSVE.api.user());
 
