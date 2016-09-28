@@ -10,7 +10,7 @@ minerva.events.on('g:appload.after', function () {
             });
         }).createSource({
             name: 'Reference',
-            baseURL: 'http://50.112.224.210/geoserver/ows',
+            baseURL: 'http://geoviz-wfs.bsvecosystem.net/geoserver/ows',
             username: '',
             password: ''
         });
