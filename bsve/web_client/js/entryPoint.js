@@ -180,6 +180,17 @@ minerva.events.on('g:appload.after', function () {
                 name: 'default',
                 description: 'Default session for the BSVE'
             }).once('g:saved', function () {
+                // disable job and analysis panels
+                session.metadata({
+                    'layout': {
+                        'm-analysis-panel': {
+                            'disabled': true
+                        },
+                        'm-jobs-panel': {
+                            'disabled': true
+                        }
+                    }
+                });
                 session.once('m:session_saved', function () {
                     defer.resolve(session.attributes);
                 }).createSessionMetadata();
@@ -220,6 +231,7 @@ minerva.events.on('g:appload.after', function () {
 
     if (typeof BSVE !== 'undefined') {
         console.log('BSVE JS object exists');
+
         BSVE.init(function() {
             remove_bsve_css();
 
@@ -254,5 +266,17 @@ minerva.events.on('g:appload.after', function () {
     } else {
         console.log('No BSVE object defined');
     }
+});
 
+// we don't want a header so remove the header element on the main app
+girder.wrap(minerva.App, 'render', function (render) {
+    render.apply(this, arguments);
+    this.$('#m-app-header-container').remove();
+});
+
+// also remove the session header from the session view
+// this happens async so we need to do it on the pre-render
+// event
+girder.events.on('m:pre-render-panel-groups', function () {
+    $('.m-session-header').remove();
 });
