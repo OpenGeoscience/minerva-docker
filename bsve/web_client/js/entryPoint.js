@@ -270,7 +270,7 @@ minerva.events.on('g:appload.after', function () {
 
 // we don't want a header so remove the header element on the main app
 girder.wrap(minerva.App, 'render', function (render) {
-    render.apply(this, arguments);
+    render.call(this);
     this.$('#m-app-header-container').remove();
 });
 
@@ -279,4 +279,15 @@ girder.wrap(minerva.App, 'render', function (render) {
 // event
 girder.events.on('m:pre-render-panel-groups', function () {
     $('.m-session-header').remove();
+});
+
+// remove the button to remove panels from the session
+girder.wrap(minerva.views.LayersPanel, 'render', function (render) {
+    render.call(this);
+    this.$('.m-remove-panel').remove();
+});
+
+girder.wrap(minerva.views.DataPanel, 'render', function (render) {
+    render.call(this);
+    this.$('.m-remove-panel').remove();
 });
