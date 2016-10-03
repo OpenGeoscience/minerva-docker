@@ -246,6 +246,11 @@ minerva.events.on('g:appload.after', function () {
             console.log('GeoViz 0.0.47');
             console.log(user);
 
+            // set auth cookie for bsve proxy endpoints
+            document.cookie = 'minervaHeaders=' + JSON.stringify({
+                'harbinger-auth-ticket': authTicket
+            });
+
             var auth = 'Basic ' + window.btoa(user + ':' + authTicket);
 
             // log in to minerva using bsve credentials
