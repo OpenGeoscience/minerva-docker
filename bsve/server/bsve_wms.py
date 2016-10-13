@@ -4,6 +4,7 @@ from bsve_wms_styles import BsveWmsStyle
 from girder.api import access
 from girder.api.describe import Description
 from girder.plugins.minerva.rest.dataset import Dataset
+from girder.plugins.minerva.utility.cookie import getExtraHeaders
 
 import requests
 
@@ -22,8 +23,7 @@ class BsveWmsDataset(Dataset):
         wms = "https://api-dev.bsvecosystem.net/data/v2/" + \
               "sources/geotiles/meta/list"
 
-        headers = {'harbinger-authentication': params['auth-token']}
-        resp = requests.get(wms, headers=headers)
+        resp = requests.get(wms, headers=getExtraHeaders())
         data = json.loads(resp.text)
 
         layers = []
@@ -37,17 +37,17 @@ class BsveWmsDataset(Dataset):
                                      'source_type': 'wms'}
              wms_params['geo_render'] = {'type': 'wms'}
              layer_type = 'raster' if 'WCS' in d['keywords'] else 'vector'
-             dataset = self.createBsveDataset(wms_params, layer_type, headers)
+             dataset = self.createBsveDataset(wms_params, layer_type)
              layers.append(dataset)
 
         return layers
 
     @access.user
-    def createBsveDataset(self, params, layer_type, headers):
+    def createBsveDataset(self, params, layer_type):
         typeName = params['typeName']
 
         try:
-            layer_info = BsveWmsStyle(typeName, headers).get_layer_info(layer_type)
+            layer_info = BsveWmsStyle(typeName).get_layer_info(layer_type)
         except TypeError:
             layer_info = ""
 
