@@ -17,9 +17,11 @@ class BsveWmsStyle(object):
         """
 
         url = "https://api-dev.bsvecosystem.net/data/v2/sources/geoprocessing/request"
-        headers = self._headers.update({'Content-Type': 'application/xml'})
         xml_data = wps_template(self._type_name, attribute)
-        res = requests.post(url, data=xml_data, headers=headers)
+        res = requests.post(url,
+                            data=xml_data,
+                            headers=self._headers)
+
         # Means wps is not activated
         if res.status_code == 404:
             return None
@@ -70,8 +72,7 @@ class BsveWmsStyle(object):
             bsve_wfs = base_bsve + "geofeatures/data/result?"
             wfs_qs = quote("$filter=name eq {} and request eq describefeaturetype&$format=text/xml; subtype=gml/3.1.1".format(self._type_name), safe='=&$ ').replace(' ', '+')
             resp = requests.get(bsve_wfs + wfs_qs, headers=self._headers)
-            # TODO: Fix this part
-            tree = ET.fromstring(str(resp.content))
+            tree = ET.fromstring(resp.content)
             layer_params['layerType'] = layer_type
             layer_params['subType'] = WmsStyle._get_vector_type(tree)
             layer_params['attributes'] = self._get_attributes(tree)
@@ -86,5 +87,4 @@ class BsveWmsStyle(object):
             layer_params['bands'] = bands
             layer_params['subType'] = sub_type
 
-        print layer_params
-        return "info"
+        return layer_params
