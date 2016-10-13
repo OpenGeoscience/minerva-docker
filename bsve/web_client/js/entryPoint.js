@@ -10,9 +10,6 @@ minerva.events.on('g:appload.after', function () {
             });
         }).createBsveDataset({
             name: 'Reference',
-            baseURL: 'http://geoviz-wfs.bsvecosystem.net/geoserver/ows',
-            username: '',
-            password: ''
         });
     }
 
