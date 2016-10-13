@@ -56,6 +56,8 @@ class BsveWmsDataset(Dataset):
         self.requireParams(('name'), params)
         name = params['name']
 
+        params['layer_info'] = layer_info
+
         dataset = self.constructDataset(name, params)
         return dataset
 
