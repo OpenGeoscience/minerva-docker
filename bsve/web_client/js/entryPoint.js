@@ -2,13 +2,13 @@ minerva.events.on('g:appload.after', function () {
 
     function init_reference_data(collection) {
 
-        var wmsSource = new minerva.models.WmsSourceModel({});
-        wmsSource.on('m:sourceReceived', function (datasets) {
+        var wmsSource = new minerva.models.BsveDatasetModel({});
+        wmsSource.on('m:wmsDatasetAdded', function (datasets) {
             _.each(datasets, function (dataset) {
                 collection.add(dataset, {silent: true});
                 collection.trigger('add');
             });
-        }).createSource({
+        }).createBsveDataset({
             name: 'Reference',
             baseURL: 'http://geoviz-wfs.bsvecosystem.net/geoserver/ows',
             username: '',
