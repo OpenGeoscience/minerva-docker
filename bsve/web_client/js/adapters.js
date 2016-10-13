@@ -114,3 +114,4 @@ minerva.rendering.geo.BSVERepresentation = minerva.rendering.geo.defineMapLayer(
         );
         this.trigger('m:map_layer_renderable', this);
     };
+});
