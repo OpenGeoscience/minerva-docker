@@ -244,9 +244,9 @@ minerva.events.on('g:appload.after', function () {
             console.log(user);
 
             // set auth cookie for bsve proxy endpoints
-            document.cookie = 'minervaHeaders=' + JSON.stringify({
+            document.cookie = 'minervaHeaders=' + encodeURIComponent(JSON.stringify({
                 'harbinger-auth-ticket': authTicket
-            });
+            }));
 
             var auth = 'Basic ' + window.btoa(user + ':' + authTicket);
 
