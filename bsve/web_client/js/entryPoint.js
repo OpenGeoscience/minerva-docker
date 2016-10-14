@@ -240,7 +240,7 @@ minerva.events.on('g:appload.after', function () {
                 authTicket = BSVE.api.authTicket(), // harbinger-auth-ticket
                 tenancy = BSVE.api.tenancy(), // logged in user's tenant
                 dismissed = false; // used for dismissing modal alert for tagging confirmation
-            console.log('GeoViz 0.0.47');
+            console.log('GeoViz 0.0.48');
             console.log(user);
 
             // set auth cookie for bsve proxy endpoints
