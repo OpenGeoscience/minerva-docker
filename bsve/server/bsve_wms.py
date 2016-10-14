@@ -29,16 +29,16 @@ class BsveWmsDataset(Dataset):
         layers = []
 
         for d in data['tiles']:
-             wms_params = {}
-             wms_params['typeName'] = d['name']
-             wms_params['name'] = d['styles'][0]['title']
-             wms_params['abstract'] = d['abstract']
-             wms_params['source'] = {'layer_source': 'Reference',
-                                     'source_type': 'wms'}
-             wms_params['geo_render'] = {'type': 'wms'}
-             layer_type = 'raster' if 'WCS' in d['keywords'] else 'vector'
-             dataset = self.createBsveDataset(wms_params, layer_type)
-             layers.append(dataset)
+            wms_params = {}
+            wms_params['typeName'] = d['name']
+            wms_params['name'] = d['styles'][0]['title']
+            wms_params['abstract'] = d['abstract']
+            wms_params['source'] = {'layer_source': 'Reference',
+                                    'source_type': 'wms'}
+            wms_params['geo_render'] = {'type': 'wms'}
+            layer_type = 'raster' if 'WCS' in d['keywords'] else 'vector'
+            dataset = self.createBsveDataset(wms_params, layer_type)
+            layers.append(dataset)
 
         return layers
 
@@ -62,5 +62,8 @@ class BsveWmsDataset(Dataset):
         return dataset
 
     createBsveSource.description = (
-        Description('Create bsve datasets from bsve geoserver')
-        .param('auth-token', 'https://jbeezley.github.io/bsve-rest/', required=True))
+        Description('Create bsve datasets from bsve geoserver').param(
+            'auth-token',
+            'https://jbeezley.github.io/bsve-rest/',
+            required=True)
+    )
