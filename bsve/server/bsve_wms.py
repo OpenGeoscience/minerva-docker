@@ -62,8 +62,5 @@ class BsveWmsDataset(Dataset):
         return dataset
 
     createBsveSource.description = (
-        Description('Create bsve datasets from bsve geoserver').param(
-            'auth-token',
-            'https://jbeezley.github.io/bsve-rest/',
-            required=True)
+        Description('Create bsve datasets from bsve geoserver')
     )
