@@ -2,6 +2,7 @@ from girder import events
 import bsve_wms
 
 from auth import Authentication
+from test import TestEndpoint
 
 
 def load(info):
@@ -12,3 +13,6 @@ def load(info):
 
     # Add an endpoint for bsve wms dataset
     info['apiRoot'].bsve_datasets_wms = bsve_wms.BsveWmsDataset()
+
+    # Add test endpoints
+    info['apiRoot'].test = TestEndpoint()
