@@ -32,8 +32,7 @@ minerva.rendering.geo.BSVERepresentation = minerva.rendering.geo.defineMapLayer(
                     'and width eq 256',
                     'and height eq 256',
                     'and projection eq',
-                    projection,
-                    'and format eq image/png'
+                    projection
                 ].join(' ');
 
                 // There is a lot of repeated code here. It can be easily refactored
