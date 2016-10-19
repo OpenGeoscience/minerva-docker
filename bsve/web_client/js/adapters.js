@@ -108,7 +108,7 @@ minerva.rendering.geo.BSVERepresentation = minerva.rendering.geo.defineMapLayer(
                     }
                     filter += " and sld_body eq '" + sld_body + "'";
                 }
-                return this.geoJsLayer.baseUrl + '?' + $.param({'$filter': filter});
+                return this.geoJsLayer.baseUrl + '?' + escape('$filter') + '=' + escape(filter);
             }, this)
         );
         this.trigger('m:map_layer_renderable', this);
