@@ -25,7 +25,7 @@ minerva.rendering.geo.BSVERepresentation = minerva.rendering.geo.defineMapLayer(
                 var bbox_mercator = bb.left + ',' + bb.bottom + ',' + bb.right + ',' + bb.top;
                 var filter = [
                     'names eq',
-                    minervaMetadata.type_name,
+                    minervaMetadata.typeName,
                     'and tiled eq false',
                     'and geo.bbox eq',
                     bbox_mercator,
