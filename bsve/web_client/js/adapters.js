@@ -106,7 +106,7 @@ minerva.rendering.geo.BSVERepresentation = minerva.rendering.geo.defineMapLayer(
                                 attribute: attribute});
                         }
                     }
-                    filter += ' and sld_body eq ' + sld_body;
+                    filter += ' and sld_body eq ' + sld_body.replace(' ', '+');
                 }
                 return this.geoJsLayer.baseUrl + encodeURIComponent('?' + $.param({'$filter': filter}));
             }, this)
