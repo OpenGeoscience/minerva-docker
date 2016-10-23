@@ -14,7 +14,7 @@ minerva.rendering.geo.BSVERepresentation = minerva.rendering.geo.defineMapLayer(
         });
         container.addFeatureInfoLayer(this.geoJsLayer);
         var minervaMetadata = dataset.metadata();
-        this.geoJsLayer.layerName = minervaMetadata.type_name;
+        this.geoJsLayer.layerName = minervaMetadata.typeName;
         var baseUrl = 'https://api-dev.bsvecosystem.net/data/v2/sources/geotiles/data/result'
         this.geoJsLayer.baseUrl = '/wms_proxy/' + encodeURIComponent(baseUrl);
         var projection = 'EPSG:3857';
@@ -49,6 +49,7 @@ minerva.rendering.geo.BSVERepresentation = minerva.rendering.geo.defineMapLayer(
                 var colorValuePairs = null;
                 var attribute = null;
                 if (minervaMetadata.sld_params) {
+                    minervaMetadata.sld_params.typeName = minervaMetadata.typeName;
                     if (minervaMetadata.sld_params.subType === 'multiband') {
                         sld_body = multiband_template({
                             typeName: minervaMetadata.sld_params.typeName,
