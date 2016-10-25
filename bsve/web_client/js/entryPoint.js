@@ -55,18 +55,17 @@ minerva.events.on('g:appload.after', function () {
                     // This could probably be combined with the logic below to
                     // stop polling, but there wasn't time to think it through.
                 }
-                BSVE.api.get('/api/search/result?requestId=' + query.requestId, function(response)
-                {
+                BSVE.api.get('/api/search/result?requestId=' + query.requestId, function(response) {
+                    var status;
                     // Store available data source types for reference.
                     if ( !dataSources ) {
                         dataSources = response.availableSourceTypes;
                     }
 
-                    for ( var i = dataSources.length - 1; i >= 0; i-- )
-                    {
+                    for ( var i = dataSources.length - 1; i >= 0; i-- ) {
                         // Check each data source in the result.
-
-                        if ( response.sourceTypeResults[dataSources[i]].message == "Successfully processed." )
+                        status = response.sourceTypeResults[dataSources[i]].status;
+                        if ( status === 4 || status === 12)
                         {
                             // Supposedly this source type is done, but it may not actually be.
                             // Fetch updated geoJSON and remove this data source from list.
@@ -75,8 +74,7 @@ minerva.events.on('g:appload.after', function () {
                         }
                     }
 
-                    if (dataSources.length)
-                    {
+                    if (dataSources.length) {
                         if (currentRequestId != query.requestId || finishedCurrentRequest) {
                             if(currentRequestId != query.requestId) {
                                 console.log('stop polling bc of requestId');
