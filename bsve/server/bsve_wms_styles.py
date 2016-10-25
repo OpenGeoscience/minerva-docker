@@ -16,7 +16,7 @@ class BsveWmsStyle(object):
         numeric attribute
         """
 
-        url = "https://api-dev.bsvecosystem.net/data/v2/sources/geoprocessing/request"
+        url = "https://api-qa.bsvecosystem.net/data/v2/sources/geoprocessing/request"
         headers = getExtraHeaders()
         headers.update({'Content-Type': 'application/xml'})
         xml_data = wps_template(self._type_name, attribute)
@@ -68,7 +68,7 @@ class BsveWmsStyle(object):
 
         layer_params = {}
 
-        base_bsve = "https://api-dev.bsvecosystem.net/data/v2/sources/"
+        base_bsve = "https://api-qa.bsvecosystem.net/data/v2/sources/"
         headers = getExtraHeaders()
 
         if layer_type == 'vector':

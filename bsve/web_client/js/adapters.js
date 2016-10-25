@@ -15,7 +15,7 @@ minerva.rendering.geo.BSVERepresentation = minerva.rendering.geo.defineMapLayer(
         container.addFeatureInfoLayer(this.geoJsLayer);
         var minervaMetadata = dataset.metadata();
         this.geoJsLayer.layerName = minervaMetadata.typeName;
-        var baseUrl = 'https://api-dev.bsvecosystem.net/data/v2/sources/geotiles/data/result'
+        var baseUrl = 'https://api-qa.bsvecosystem.net/data/v2/sources/geotiles/data/result'
         this.geoJsLayer.baseUrl = '/wms_proxy/' + encodeURIComponent(baseUrl);
         var projection = 'EPSG:3857';
 

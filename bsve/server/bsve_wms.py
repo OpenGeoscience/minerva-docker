@@ -20,7 +20,7 @@ class BsveWmsDataset(Dataset):
         """ Hits the bsve urls """
 
         # Bsve geoserver (wms get capabilities url)
-        wms = "https://api-dev.bsvecosystem.net/data/v2/" + \
+        wms = "https://api-qa.bsvecosystem.net/data/v2/" + \
               "sources/geotiles/meta/list"
 
         resp = requests.get(wms, headers=getExtraHeaders())
