@@ -1,4 +1,6 @@
+from base64 import b64encode
 import json
+from urllib import quote
 
 from bsve_wms_styles import BsveWmsStyle
 from girder.api import access
@@ -46,6 +48,8 @@ class BsveWmsDataset(Dataset):
     def createBsveDataset(self, params, layer_type):
         typeName = params['type_name']
 
+        headers = getExtraHeaders()
+
         try:
             layer_info = BsveWmsStyle(typeName).get_layer_info(layer_type)
         except TypeError:
@@ -59,6 +63,12 @@ class BsveWmsDataset(Dataset):
         params['layer_info'] = layer_info
         params['adapter'] = 'bsve'
 
+        legend_url = "https://api-dev.bsvecosystem.net/data/v2/sources/geotiles/data/result?"
+        legend_qs = quote("$filter=name eq {} and request eq getlegendgraphic and height eq 20 and width eq 20".format(typeName), safe='= ').replace(' ', '+')
+
+        r = requests.get(legend_url + legend_qs, headers=headers)
+        legend = b64encode(r.content)
+        params['legend'] = legend
         dataset = self.constructDataset(name, params)
         return dataset
 
