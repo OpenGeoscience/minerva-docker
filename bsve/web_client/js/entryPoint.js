@@ -8,6 +8,7 @@ minerva.events.on('g:appload.after', function () {
                 collection.add(dataset, {silent: true});
                 collection.trigger('add');
             });
+            minerva.events.trigger('m:updateDatasets');
             remove_spinner();
         }).createBsveDataset({
             name: 'Reference',
@@ -117,6 +118,7 @@ minerva.events.on('g:appload.after', function () {
                                     }
                                     sourceTypeFeatures[sourceType] = geojsonData.features.length;
                                     minerva.events.trigger('m:add_external_geojson', gjObj);
+                                    minerva.events.trigger('m:updateDatasets');
                                 }
                                 // Assume this means we got some request data back.
                                 finishedCurrentRequest = true;
