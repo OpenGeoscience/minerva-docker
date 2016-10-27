@@ -8,6 +8,7 @@ minerva.events.on('g:appload.after', function () {
                 collection.add(dataset, {silent: true});
                 collection.trigger('add');
             });
+            remove_spinner();
         }).createBsveDataset({
             name: 'Reference',
         });
@@ -204,6 +205,8 @@ minerva.events.on('g:appload.after', function () {
                 });
                 if (needReference) {
                     init_reference_data(datasets);
+                } else {
+                    remove_spinner();
                 }
             });
             minerva.router.navigate('session/' + session.id, {trigger: true});
@@ -224,11 +227,38 @@ minerva.events.on('g:appload.after', function () {
         console.error(resp);
     }
 
+    function hide_body() {
+        $('#g-app-body-container').hide();
+    }
+
+    function show_body() {
+        $('#g-app-body-container').show();
+    }
+
+    var spinner;
+    function show_spinner() {
+        spinner = $(
+            '<i class="icon-spin3 animate-spin"/>'
+        ).css({
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            'z-index': 10000,
+            'font-size': '40px'
+        }).appendTo('body');
+    }
+
+    function remove_spinner() {
+        spinner.remove();
+    }
+
     if (typeof BSVE !== 'undefined') {
         console.log('BSVE JS object exists');
 
         BSVE.init(function() {
             remove_bsve_css();
+
+            show_spinner();
 
             console.log('BSVE.init callback');
             console.log(BSVE.api.user());
@@ -261,7 +291,10 @@ minerva.events.on('g:appload.after', function () {
                 start_session
             ).then(
                 bsve_search_handler
-            ).then(undefined, error_handler);
+            ).then(undefined , function () {
+                remove_spinner();
+                error_handler();
+            });
         });
     } else {
         console.log('No BSVE object defined');
