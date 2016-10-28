@@ -30,7 +30,7 @@ class BsveWmsDataset(Dataset):
 
         for d in data['tiles']:
             wms_params = {}
-            wms_params['typeName'] = d['name']
+            wms_params['type_name'] = d['name']
             wms_params['name'] = d['styles'][0]['title']
             wms_params['abstract'] = d['abstract']
             wms_params['source'] = {'layer_source': 'Reference',
@@ -44,7 +44,7 @@ class BsveWmsDataset(Dataset):
 
     @access.user
     def createBsveDataset(self, params, layer_type):
-        typeName = params['typeName']
+        typeName = params['type_name']
 
         try:
             layer_info = BsveWmsStyle(typeName).get_layer_info(layer_type)
