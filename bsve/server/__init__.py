@@ -1,5 +1,6 @@
 from girder import events
 import bsve_wms
+from feature import callBsveFeatureInfo
 
 from auth import Authentication
 from test import TestEndpoint
@@ -7,7 +8,10 @@ from test import TestEndpoint
 
 def get_layer_info(event):
     event.preventDefault()
-    event.addResponse('BSVE layer info')
+    response = callBsveFeatureInfo(event.info['baseUrl'],
+                                   event.info['params'],
+                                   event.info['layers'])
+    event.addResponse(response)
 
 
 def load(info):
