@@ -117,8 +117,10 @@ minerva.events.on('g:appload.after', function () {
                                         'name': sourceType + ' - ' + geojsonData.features.length
                                     }
                                     sourceTypeFeatures[sourceType] = geojsonData.features.length;
-                                    minerva.events.trigger('m:add_external_geojson', gjObj);
-                                    minerva.events.trigger('m:updateDatasets');
+                                    minerva.events.trigger('m:addExternalGeoJSON', {
+                                        name: gjObj.name,
+                                        data: gjObj.geojson
+                                    });
                                 }
                                 // Assume this means we got some request data back.
                                 finishedCurrentRequest = true;
