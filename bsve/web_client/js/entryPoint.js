@@ -139,6 +139,15 @@ minerva.events.on('g:appload.after', function () {
         }, true, true, true); // set all 3 flags to true, which will hide the searchbar altogether
     }
 
+    function data_exchange_handler() {
+        BSVE.api.exchange.receive(function (data) {
+            minerva.events.trigger('m:addExternalGeoJSON', {
+                name: 'Imported',
+                data: data
+            });
+        });
+    }
+
     function start_session(resp) {
         var user = resp;
         var folder;
@@ -295,6 +304,8 @@ minerva.events.on('g:appload.after', function () {
                 start_session
             ).then(
                 bsve_search_handler
+            ).then(
+                data_exchange_handler
             ).then(undefined , function () {
                 remove_spinner();
                 error_handler();
