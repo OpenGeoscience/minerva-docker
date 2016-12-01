@@ -1,4 +1,4 @@
-FROM girder/girder
+FROM girder/girder:1.7.0
 
 ADD minerva /girder/plugins/minerva
 ADD bsve /girder/plugins/bsve
