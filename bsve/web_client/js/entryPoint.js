@@ -295,7 +295,7 @@ minerva.events.on('g:appload.after', function () {
             girder.restRequest({
                 path: 'bsve/authentication',
                 data: {
-                    apiroot: 'https:' + BSVE.api.appRoot()
+                    apiroot: 'https:' + BSVE.api.appRoot() + '/api'
                 },
                 headers: {
                     'Authorization': auth
