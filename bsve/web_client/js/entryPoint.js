@@ -142,7 +142,7 @@ minerva.events.on('g:appload.after', function () {
     function data_exchange_handler() {
         BSVE.api.exchange.receive(function (data) {
             minerva.events.trigger('m:addExternalGeoJSON', {
-                name: 'Imported',
+                name: data.name || 'Imported',
                 data: data
             });
         });
