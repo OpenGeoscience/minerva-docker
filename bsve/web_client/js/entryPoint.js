@@ -289,6 +289,9 @@ minerva.events.on('g:appload.after', function () {
                 'harbinger-auth-ticket': authTicket
             }));
 
+            // set bsve api root cookie
+            document.cookie = 'bsveRoot=' + 'https://' + BSVE.api.appRoot();
+
             var auth = 'Basic ' + window.btoa(user + ':' + authTicket);
 
             // log in to minerva using bsve credentials
