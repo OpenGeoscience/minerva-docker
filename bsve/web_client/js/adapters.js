@@ -8,6 +8,7 @@ minerva.rendering.geo.BSVERepresentation = minerva.rendering.geo.defineMapLayer(
      * @fires 'm:map_layer_error' event upon an error defining the layer rendering
      */
     this.init = function (container, dataset) {
+        var bsveapi = 'https://' + BSVE.api.appRoot();
         this.geoJsLayer = container.createLayer('osm', {
             attribution: null,
             keepLower: false
@@ -15,7 +16,7 @@ minerva.rendering.geo.BSVERepresentation = minerva.rendering.geo.defineMapLayer(
         container.addFeatureInfoLayer(this.geoJsLayer);
         var minervaMetadata = dataset.metadata();
         this.geoJsLayer.layerName = minervaMetadata.type_name;
-        var baseUrl = 'https://api-qa.bsvecosystem.net/data/v2/sources/geotiles/data/result'
+        var baseUrl = bsveapi + '/data/v2/sources/geotiles/data/result'
         this.geoJsLayer.baseUrl = '/wms_proxy/' + encodeURIComponent(baseUrl);
         var projection = 'EPSG:3857';
 
