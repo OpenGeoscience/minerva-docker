@@ -290,7 +290,7 @@ minerva.events.on('g:appload.after', function () {
             }));
 
             // set bsve api root cookie
-            document.cookie = 'bsveRoot=' + 'https://' + BSVE.api.appRoot();
+            document.cookie = 'bsveRoot=' + encodeURIComponent('https://' + BSVE.api.appRoot());
 
             var auth = 'Basic ' + window.btoa(user + ':' + authTicket);
 

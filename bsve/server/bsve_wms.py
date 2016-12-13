@@ -2,13 +2,15 @@ from base64 import b64encode
 import json
 from urllib import quote
 
-from bsve_wms_styles import BsveWmsStyle
 from girder.api import access
 from girder.api.describe import Description
 from girder.plugins.minerva.rest.dataset import Dataset
 from girder.plugins.minerva.utility.cookie import getExtraHeaders
 
 import requests
+
+from .bsve_wms_styles import BsveWmsStyle
+from .cookie import bsveRoot
 
 
 class BsveWmsDataset(Dataset):
@@ -22,8 +24,8 @@ class BsveWmsDataset(Dataset):
         """ Hits the bsve urls """
 
         # Bsve geoserver (wms get capabilities url)
-        wms = "https://api-qa.bsvecosystem.net/data/v2/" + \
-              "sources/geotiles/meta/list"
+        root = bsveRoot()
+        wms = root + "/data/v2/sources/geotiles/meta/list"
 
         resp = requests.get(wms, headers=getExtraHeaders())
         data = json.loads(resp.text)
@@ -63,7 +65,8 @@ class BsveWmsDataset(Dataset):
         params['layer_info'] = layer_info
         params['adapter'] = 'bsve'
 
-        legend_url = "https://api-dev.bsvecosystem.net/data/v2/sources/geotiles/data/result?"
+        root = bsveRoot()
+        legend_url = root + "/data/v2/sources/geotiles/data/result?"
         legend_qs = quote("$filter=name eq {} and request eq getlegendgraphic and height eq 20 and width eq 20".format(typeName), safe='= ').replace(' ', '+')
 
         r = requests.get(legend_url + legend_qs, headers=headers)
