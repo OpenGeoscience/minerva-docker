@@ -6,6 +6,8 @@ from girder.plugins.minerva.utility.cookie import getExtraHeaders
 
 import requests
 
+from .cookie import bsveRoot
+
 
 class BsveWmsStyle(object):
     def __init__(self, type_name):
@@ -16,7 +18,8 @@ class BsveWmsStyle(object):
         numeric attribute
         """
 
-        url = "https://api-qa.bsvecosystem.net/data/v2/sources/geoprocessing/request"
+        root = bsveRoot()
+        url = root + "/data/v2/sources/geoprocessing/request"
         headers = getExtraHeaders()
         headers.update({'Content-Type': 'application/xml'})
         xml_data = wps_template(self._type_name, attribute)
@@ -68,7 +71,8 @@ class BsveWmsStyle(object):
 
         layer_params = {}
 
-        base_bsve = "https://api-qa.bsvecosystem.net/data/v2/sources/"
+        root = bsveRoot()
+        base_bsve = root + "/data/v2/sources/"
         headers = getExtraHeaders()
 
         if layer_type == 'vector':
