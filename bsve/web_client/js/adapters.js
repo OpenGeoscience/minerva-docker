@@ -91,10 +91,12 @@ minerva.rendering.geo.BSVERepresentation = minerva.rendering.geo.defineMapLayer(
                                 value: pair[0]}); }).join('');
 
                         if (minervaMetadata.sld_params.subType === 'point') {
+                            var marker = minervaMetadata.sld_params.marker;
                             sld_body = point_template({
                                 typeName: minervaMetadata.sld_params.typeName,
                                 colorValueMapping: colorValueMapping,
-                                attribute: attribute });
+                                attribute: attribute,
+                                marker: marker });
                         } else if (minervaMetadata.sld_params.subType === 'line') {
                             sld_body = line_template({
                                 typeName: minervaMetadata.sld_params.typeName,
