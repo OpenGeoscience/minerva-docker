@@ -8,7 +8,7 @@ minerva.rendering.geo.BSVERepresentation = minerva.rendering.geo.defineMapLayer(
      * @fires 'm:map_layer_error' event upon an error defining the layer rendering
      */
     this.init = function (container, dataset) {
-        var bsveapi = 'https://' + BSVE.api.appRoot();
+        var bsveapi = 'https:' + BSVE.api.appRoot();
         this.geoJsLayer = container.createLayer('osm', {
             attribution: null,
             keepLower: false
