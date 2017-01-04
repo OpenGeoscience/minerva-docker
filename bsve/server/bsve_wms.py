@@ -7,8 +7,8 @@ from girder.api.describe import Description
 from girder.plugins.minerva.rest.dataset import Dataset
 from girder.plugins.minerva.utility.cookie import getExtraHeaders
 
-import requests
 
+from . import logged_requests as requests
 from .bsve_wms_styles import BsveWmsStyle
 from .cookie import bsveRoot
 

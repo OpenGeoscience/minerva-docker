@@ -2,7 +2,7 @@ from urllib import quote
 
 from girder.plugins.minerva.utility.cookie import getExtraHeaders
 
-import requests
+from . import logged_requests as requests
 
 
 def callBsveFeatureInfo(baseUrl, params, typeNames):

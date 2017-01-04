@@ -1,9 +1,9 @@
 from girder import events
-import bsve_wms
-from feature import callBsveFeatureInfo
+from . import bsve_wms
+from .feature import callBsveFeatureInfo
 
-from auth import Authentication
-from test import TestEndpoint
+from .auth import Authentication
+from .test import TestEndpoint
 
 
 def get_layer_info(event):
@@ -15,6 +15,7 @@ def get_layer_info(event):
 
 
 def load(info):
+
     urls = ['//dev-developer.bsvecosystem.net/sdk/api/BSVE.API.js']
     events.trigger('minerva.additional_js_urls', urls)
 

@@ -4,8 +4,7 @@ from urllib import quote
 from girder.plugins.minerva.rest.wms_styles import WmsStyle, wps_template
 from girder.plugins.minerva.utility.cookie import getExtraHeaders
 
-import requests
-
+from . import logged_requests as requests
 from .cookie import bsveRoot
 
 
