@@ -1,5 +1,18 @@
 minerva.events.on('g:appload.after', function () {
 
+    window.bsve_root = function () {
+        var appRoot = BSVE.api.appRoot();
+        var match = appRoot.match(/([a-z]*)\.bsvecosystem.net/i);
+        if (match === null) {
+            throw new Error('Unknown app root "' + appRoot + '"');
+        }
+        var env = match[1].toLowerCase();
+        if (env === 'www') {
+            return 'https://api.bsvecosystem.net';
+        }
+        return 'https://api-' + env + '.bsvecosystem.net';
+    };
+
     function init_reference_data(collection) {
 
         var wmsSource = new minerva.models.BsveDatasetModel({});
@@ -288,6 +301,9 @@ minerva.events.on('g:appload.after', function () {
             document.cookie = 'minervaHeaders=' + encodeURIComponent(JSON.stringify({
                 'harbinger-auth-ticket': authTicket
             }));
+
+            // set bsve api root cookie
+            document.cookie = 'bsveRoot=' + encodeURIComponent(bsve_root());
 
             var auth = 'Basic ' + window.btoa(user + ':' + authTicket);
 

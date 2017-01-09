@@ -4,7 +4,8 @@ from urllib import quote
 from girder.plugins.minerva.rest.wms_styles import WmsStyle, wps_template
 from girder.plugins.minerva.utility.cookie import getExtraHeaders
 
-import requests
+from . import logged_requests as requests
+from .cookie import bsveRoot
 
 
 class BsveWmsStyle(object):
@@ -16,7 +17,8 @@ class BsveWmsStyle(object):
         numeric attribute
         """
 
-        url = "https://api-qa.bsvecosystem.net/data/v2/sources/geoprocessing/request"
+        root = bsveRoot()
+        url = root + "/data/v2/sources/geoprocessing/request"
         headers = getExtraHeaders()
         headers.update({'Content-Type': 'application/xml'})
         xml_data = wps_template(self._type_name, attribute)
@@ -68,7 +70,8 @@ class BsveWmsStyle(object):
 
         layer_params = {}
 
-        base_bsve = "https://api-qa.bsvecosystem.net/data/v2/sources/"
+        root = bsveRoot()
+        base_bsve = root + "/data/v2/sources/"
         headers = getExtraHeaders()
 
         if layer_type == 'vector':

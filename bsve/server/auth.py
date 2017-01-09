@@ -1,12 +1,13 @@
 import re
 import base64
 import cherrypy
-import requests
 
 from girder.api import access
 from girder.api.describe import Description, describeRoute
 from girder.api.rest import Resource, RestException
 from girder.utility.model_importer import ModelImporter
+
+from . import logged_requests as requests
 
 
 class Authentication(Resource):
