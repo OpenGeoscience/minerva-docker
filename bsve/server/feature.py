@@ -10,7 +10,7 @@ def callBsveFeatureInfo(params, typeNames):
     """Call bsve api for getting information about
     a lat long locaion"""
 
-    baseUrl = bsveRoot()
+    baseUrl = bsveRoot() + '/data/v2/sources/geotiles/data/result'
     headers = getExtraHeaders()
     headers.update({'Content-Type': 'application/xml'})
 
