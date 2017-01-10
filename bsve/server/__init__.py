@@ -7,9 +7,12 @@ from .test import TestEndpoint
 
 
 def get_layer_info(event):
+    # if a baseUrl is present, this is not a bsve data source
+    if event.info.get('baseUrl'):
+        return
+
     event.preventDefault()
-    response = callBsveFeatureInfo(event.info['baseUrl'],
-                                   event.info['params'],
+    response = callBsveFeatureInfo(event.info['params'],
                                    event.info['layers'])
     event.addResponse(response)
 

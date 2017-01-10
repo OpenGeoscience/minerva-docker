@@ -3,12 +3,14 @@ from urllib import quote
 from girder.plugins.minerva.utility.cookie import getExtraHeaders
 
 from . import logged_requests as requests
+from .cookie import bsveRoot
 
 
-def callBsveFeatureInfo(baseUrl, params, typeNames):
+def callBsveFeatureInfo(params, typeNames):
     """Call bsve api for getting information about
     a lat long locaion"""
 
+    baseUrl = bsveRoot()
     headers = getExtraHeaders()
     headers.update({'Content-Type': 'application/xml'})
 
