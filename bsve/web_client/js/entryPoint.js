@@ -224,6 +224,7 @@ minerva.events.on('g:appload.after', function () {
                 attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.',
                 url: 'http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png'
             };
+            session.set(resp);
             session.once('m:metadata_saved', function () {
                 girder.events.once('g:navigateTo', function (view, obj) {
                     var datasets = obj.datasetsCollection;
