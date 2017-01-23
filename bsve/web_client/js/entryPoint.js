@@ -219,23 +219,30 @@ minerva.events.on('g:appload.after', function () {
             }).save();
             return defer.promise();
         }).then(function (resp) {
+            // set the basemap tileset
+            resp.meta.minerva.map.basemap_args = {
+                attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.',
+                url: 'http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png'
+            };
             session.set(resp);
-            girder.events.once('g:navigateTo', function (view, obj) {
-                var datasets = obj.datasetsCollection;
-                var needReference = true;
-                datasets.each(function (dataset) {
-                    var mm = dataset.attributes.meta.minerva;
-                    if (mm.source && mm.source.layer_source === 'Reference') {
-                        needReference = false;
+            session.once('m:metadata_saved', function () {
+                girder.events.once('g:navigateTo', function (view, obj) {
+                    var datasets = obj.datasetsCollection;
+                    var needReference = true;
+                    datasets.each(function (dataset) {
+                        var mm = dataset.attributes.meta.minerva;
+                        if (mm.source && mm.source.layer_source === 'Reference') {
+                            needReference = false;
+                        }
+                    });
+                    if (needReference) {
+                        init_reference_data(datasets);
+                    } else {
+                        remove_spinner();
                     }
                 });
-                if (needReference) {
-                    init_reference_data(datasets);
-                } else {
-                    remove_spinner();
-                }
-            });
-            minerva.router.navigate('session/' + session.id, {trigger: true});
+                minerva.router.navigate('session/' + session.id, {trigger: true});
+            }).saveMinervaMetadata(resp.meta.minerva);
         });
     }
 
