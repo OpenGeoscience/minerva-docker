@@ -43,6 +43,7 @@ minerva.rendering.geo.BSVERepresentation = minerva.rendering.geo.defineMapLayer(
                 var sld_body = null;
                 var min = null;
                 var max = null;
+                var nodata = null;
                 var ramp = null;
                 var count = null;
                 var seq = null;
@@ -60,6 +61,17 @@ minerva.rendering.geo.BSVERepresentation = minerva.rendering.geo.defineMapLayer(
                     } else if (minervaMetadata.sld_params.subType === 'singleband') {
                         min = parseFloat(minervaMetadata.sld_params.min);
                         max = parseFloat(minervaMetadata.sld_params.max);
+                        nodata = parseFloat(minervaMetadata.sld_params.nodata);
+                        // If nodata is greater than max it has to be added
+                        // to the end, otherwise it has to be added to the
+                        // begining
+                        var nodataMin = min - 1;
+                        var nodataMax = max + 1;
+                        if (nodata > max) {
+                            nodataMax = nodata;
+                        } else if (nodata < min) {
+                            nodataMin = nodata;
+                        }
                         ramp = minervaMetadata.sld_params['ramp[]'];
                         count = ramp.length;
                         seq = generate_sequence(min, max, count);
@@ -73,7 +85,9 @@ minerva.rendering.geo.BSVERepresentation = minerva.rendering.geo.defineMapLayer(
                                 value: pair[0] }); }).join('');
                         sld_body = singleband_template({
                             typeName: minervaMetadata.sld_params.typeName,
-                            colorMapEntry: colorMapEntry
+                            colorMapEntry: colorMapEntry,
+                            nodataMin: nodataMin,
+                            nodataMax: nodataMax
                         });
                     } else {
                         min = parseFloat(minervaMetadata.sld_params.min);
