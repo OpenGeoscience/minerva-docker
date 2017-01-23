@@ -19,6 +19,16 @@ class BsveWmsDataset(Dataset):
         self.resourceName = 'bsve_datasets_wms'
         self.route('POST', (), self.createBsveSource)
 
+    def _get_category(self, dataset):
+        """Get the category from available layer information"""
+
+        category = [k for k in dataset['keywords']
+                    if k.startswith('category:')]
+        if not category:
+            return "Other"
+        else:
+            return category[0].split(":")[1]
+
     @access.user
     def createBsveSource(self, params):
         """ Hits the bsve urls """
@@ -40,6 +50,7 @@ class BsveWmsDataset(Dataset):
             wms_params['source'] = {'layer_source': 'Reference',
                                     'source_type': 'wms'}
             wms_params['geo_render'] = {'type': 'wms'}
+            wms_params['category'] = self._get_category(d)
             layer_type = 'raster' if 'WCS' in d['keywords'] else 'vector'
             dataset = self.createBsveDataset(wms_params, layer_type)
             layers.append(dataset)
