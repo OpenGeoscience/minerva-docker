@@ -29,6 +29,16 @@ class BsveWmsDataset(Dataset):
         else:
             return category[0].split(":")[1]
 
+    def _get_metadata(self, dataset):
+        """Get the layer metadata if exist"""
+
+        metadata = [k for k in dataset['keywords']
+                    if k.startswith('layer_info:')]
+        if not metadata:
+            return ""
+        else:
+            return json.loads(metadata[0].split("layer_info:")[1])
+
     @access.user
     def createBsveSource(self, params):
         """ Hits the bsve urls """
@@ -51,6 +61,7 @@ class BsveWmsDataset(Dataset):
                                     'source_type': 'wms'}
             wms_params['geo_render'] = {'type': 'wms'}
             wms_params['category'] = self._get_category(d)
+            wms_params['metadata'] = self._get_metadata(d)
             layer_type = 'raster' if 'WCS' in d['keywords'] else 'vector'
             dataset = self.createBsveDataset(wms_params, layer_type)
             layers.append(dataset)
@@ -64,7 +75,10 @@ class BsveWmsDataset(Dataset):
         headers = getExtraHeaders()
 
         try:
-            layer_info = BsveWmsStyle(typeName).get_layer_info(layer_type)
+            if params['metadata']:
+                layer_info = params['metadata']
+            else:
+                layer_info = BsveWmsStyle(typeName).get_layer_info(layer_type)
         except TypeError:
             layer_info = ""
 
