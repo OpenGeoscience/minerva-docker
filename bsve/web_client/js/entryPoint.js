@@ -23,6 +23,16 @@ minerva.events.on('g:appload.after', function () {
             });
             minerva.events.trigger('m:updateDatasets');
             remove_spinner();
+        }).on('m:error', function (err) {
+            console.log('Error adding reference data ' + err);
+            var info = {
+                text: 'An error occurred while initialization the reference layers.  Try reloading the page.',
+                type: 'danger',
+                timeout: 5000,
+                icon: 'attention'
+            };
+            girder.events.trigger('g:alert', info);
+            remove_spinner();
         }).createBsveDataset({
             name: 'Reference',
         });
@@ -230,9 +240,13 @@ minerva.events.on('g:appload.after', function () {
                     var datasets = obj.datasetsCollection;
                     var needReference = true;
                     datasets.each(function (dataset) {
-                        var mm = dataset.attributes.meta.minerva;
-                        if (mm.source && mm.source.layer_source === 'Reference') {
-                            needReference = false;
+                        try {
+                            var mm = dataset.attributes.meta.minerva;
+                            if (mm.source && mm.source.layer_source === 'Reference') {
+                                needReference = false;
+                            }
+                        } catch(e) {
+                            console.log('skipping invalid item ' + dataset.id);
                         }
                     });
                     if (needReference) {
