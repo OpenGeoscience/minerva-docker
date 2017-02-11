@@ -55,7 +55,7 @@ class BsveWmsDataset(Dataset):
         for d in data['tiles']:
             wms_params = {}
             wms_params['type_name'] = d['name']
-            wms_params['name'] = d['styles'][0]['title']
+            wms_params['name'] = d.get('title') or d['styles'][0]['title']
             wms_params['abstract'] = d['abstract']
             wms_params['source'] = {'layer_source': 'Reference',
                                     'source_type': 'wms'}
