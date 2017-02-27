@@ -238,22 +238,7 @@ minerva.events.on('g:appload.after', function () {
             session.once('m:metadata_saved', function () {
                 girder.events.once('g:navigateTo', function (view, obj) {
                     var datasets = obj.datasetsCollection;
-                    var needReference = true;
-                    datasets.each(function (dataset) {
-                        try {
-                            var mm = dataset.attributes.meta.minerva;
-                            if (mm.source && mm.source.layer_source === 'Reference') {
-                                needReference = false;
-                            }
-                        } catch(e) {
-                            console.log('skipping invalid item ' + dataset.id);
-                        }
-                    });
-                    if (needReference) {
-                        init_reference_data(datasets);
-                    } else {
-                        remove_spinner();
-                    }
+                    init_reference_data(datasets);
                 });
                 minerva.router.navigate('session/' + session.id, {trigger: true});
             }).saveMinervaMetadata(resp.meta.minerva);

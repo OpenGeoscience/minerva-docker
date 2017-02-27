@@ -4,6 +4,7 @@ from urllib import quote
 
 from girder.api import access
 from girder.api.describe import Description
+from girder.plugins.minerva.utility.minerva_utility import findDatasetFolder
 from girder.plugins.minerva.rest.dataset import Dataset
 from girder.plugins.minerva.utility.cookie import getExtraHeaders
 
@@ -46,15 +47,27 @@ class BsveWmsDataset(Dataset):
         # Bsve geoserver (wms get capabilities url)
         root = bsveRoot()
         wms = root + "/data/v2/sources/geotiles/meta/list"
+        user = self.getCurrentUser()
 
         resp = requests.get(wms, headers=getExtraHeaders())
         data = json.loads(resp.text)
 
-        layers = []
+        existingLayers = self.getLayers(user)
+        newLayers = set()
 
         for d in data['tiles']:
+            typeName = d['name']
+            newLayers.add(typeName)
+
+            # For now skip updating layers that always exist.
+            # When we have a reliable ingestion time stamp,
+            # we should check the creation date and update
+            # if the ingestion date is later.
+            if typeName in existingLayers:
+                continue
+
             wms_params = {}
-            wms_params['type_name'] = d['name']
+            wms_params['type_name'] = typeName
             wms_params['name'] = d.get('title') or d['styles'][0]['title']
             wms_params['abstract'] = d['abstract']
             wms_params['source'] = {'layer_source': 'Reference',
@@ -63,10 +76,18 @@ class BsveWmsDataset(Dataset):
             wms_params['category'] = self._get_category(d)
             wms_params['metadata'] = self._get_metadata(d)
             layer_type = 'raster' if 'WCS' in d['keywords'] else 'vector'
-            dataset = self.createBsveDataset(wms_params, layer_type)
-            layers.append(dataset)
+            self.createBsveDataset(wms_params, layer_type)
 
-        return layers
+        # delete layers that no longer exist on the server
+        for typeName in existingLayers:
+            if typeName not in newLayers:
+                item = existingLayers[typeName]
+                self.model('item').remove(item)
+
+        # get all the bsve layers to return
+        layers = self.getLayers(user)
+
+        return list(layers.values())
 
     @access.user
     def createBsveDataset(self, params, layer_type):
@@ -103,3 +124,26 @@ class BsveWmsDataset(Dataset):
     createBsveSource.description = (
         Description('Create bsve datasets from bsve geoserver')
     )
+
+    def getLayers(self, user):
+        folder = findDatasetFolder(
+            user, user
+        )
+        if not folder:
+            return []
+
+        items = self.model('folder').childItems(folder)
+
+        layers = {}
+        for item in items:
+            adapter = item.get('meta', {}).get('minerva', {}).get('adapter')
+            name = item.get('meta', {}).get('minerva', {}).get('type_name')
+            if adapter == 'bsve':
+
+                # delete duplicates if they exist
+                if name in layers:
+                    self.model('item').remove(item)
+                else:
+                    layers[name] = item
+
+        return layers
