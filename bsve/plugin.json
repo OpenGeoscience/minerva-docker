@@ -3,6 +3,6 @@
     "description": "Minerva deployed within the BSVE.",
     "version": "0.1.0",
     "dependencies": [
-        "minerva", "gaia"
+        "minerva", "gaia_minerva"
     ]
 }

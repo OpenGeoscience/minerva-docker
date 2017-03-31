@@ -4,3 +4,6 @@
 [submodule "gaia"]
 	path = gaia
 	url = git@github.com:OpenDataAnalytics/gaia.git
+[submodule "gaia_minerva"]
+	path = gaia_minerva
+	url = git@github.com:OpenDataAnalytics/gaia_minerva.git
