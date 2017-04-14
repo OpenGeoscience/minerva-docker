@@ -1,6 +1,6 @@
 ## minerva-docker
 
-This repo provides Docker files to run [Minerva](https://github.com/Kitware/minerva) inside a Docker container.  Two containers actually, one for Minerva and one for Mongo.
+This repo provides Docker and Ansible-Container files to run [Minerva](https://github.com/Kitware/minerva) inside a Docker container.  Two containers actually, one for Minerva and one for Mongo.
 
 ## Up and running
 
@@ -11,6 +11,7 @@ Clone this repo.  Either initialize the git submodules for Minerva and Romanesco
     git clone https://github.com/OpenGeoscience/minerva-docker.git --recursive
     cd minerva-docker
 
+## Option 1: Deploy with docker-compose
 Set the three BSVE environment variables in docker-compose.yml to the correct values for a
 set of working BSVE credentials.  This will be the account that Minerva uses to connect with
 the BSVE.
@@ -21,6 +22,20 @@ the BSVE.
 Now that Minerva is running, load the page.  At this point you can register an admin user with Girder, the
 software that powers Minerva.  Now that you are logged in with the admin user, go to the Admin console,
 then the Plugins page, enable the Minerva plugin and restart the server.  Once the server is restarted, return to the root page in the browser address bar and refresh the page.  You should see the Minerva application at this point, and you will still be logged in as the admin user you created for Girder.
+
+
+## Option 2: Deploy with docker-compose
+Set the three Girder environment variables in ansible/variables.yml to the correct values for a
+set of working Girder credentials.  This will be the account that Minerva uses to connect with
+Girder.
+
+    export DOCKER_CLIENT_TIMEOUT=600
+    ansible-container build
+    ansible-container run
+
+Now that Minerva is running, load the page.
+
+
 
 #### License
 

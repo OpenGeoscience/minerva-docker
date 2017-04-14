@@ -5,7 +5,7 @@ ENV CPLUS_INCLUDE_PATH=/usr/include/gdal
 ENV C_INCLUDE_PATH=/usr/include/gdal
 
 ADD minerva /girder/plugins/minerva
-ADD bsve /girder/plugins/bsve
+ADD ansible/bsve /girder/plugins/bsve
 ADD gaia /girder/gaia
 ADD gaia_minerva /girder/plugins/gaia_minerva
 

@@ -1,0 +1,215 @@
+# This should be your Ansible playbooks to provision your containers.
+# An inventory will be automatically created using the names of the services
+# from your container.yml file.
+# Add any roles or other modules you'll need to this directory too.
+# For many examples of roles, check out Ansible Galaxy: https://galaxy.ansible.com/
+#
+---
+- hosts: all
+  gather_facts: false
+
+- hosts: mongodb
+
+  gather_facts: False
+
+  pre_tasks:
+    - name: Install python for Ansible
+      raw: test -e /usr/bin/python || (apt-get -y update && apt-get install -y python-minimal)
+      changed_when: False
+    - setup: # aka gather_facts
+
+    - name: get necessary apt packages
+      apt: name={{item}}
+      with_items:
+        - sudo
+
+  post_tasks:
+    - name: start mongo
+      shell: mongod --unixSocketPrefix /home 2>&1 &
+      async: 3600
+      poll: 0
+
+- hosts: minerva
+  gather_facts: False
+  vars:
+    girder_update: yes
+    girder_force: yes
+    girder_web: no
+    girder_always_build_assets: no
+    girder_path: /girder
+    girder_version: 599a9dbe7180f3f02bb7605205ec1c88f92fd368
+
+  environment:
+    CPLUS_INCLUDE_PATH: "/usr/include/gdal"
+    C_INCLUDE_PATH: "/usr/include/gdal"
+
+  pre_tasks:
+    - name: Install python for Ansible
+      raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+      changed_when: False
+    - setup: # aka gather_facts
+
+    - name: ensure apt cache is up to date
+      apt: update_cache=yes
+
+    - name: get packages
+      apt: name={{item}}
+      with_items:
+        - sudo
+        - wget
+        - software-properties-common
+        - build-essential
+        - python-software-properties
+        - git
+        - libffi-dev
+        - libssl-dev
+        - openssl
+        - mongodb-clients
+        - libpython-dev
+        - python-gdal
+        - libgdal-dev
+        - python-pip
+        - python-openssl
+        - tcl-tls
+        - apt-transport-https
+        - npm
+
+    - name: update ssl/sni
+      command: pip install --upgrade ndg-httpsclient idna pyasn1 requests[security]
+      sudo: true
+
+  tasks:
+    - include_role:
+        name: martinmicunda.nodejs
+        name: girder.girder
+      ignore_errors: true
+
+    - name: install girder-client requirements
+      command: pip install -r /girder/clients/python/requirements.txt
+
+    - name: install girder-client
+      command: pip install -e /girder/clients/python/.
+
+    - name: import variables
+      include_vars: file=variables.yml
+
+    - name: git clone minerva
+      git:
+        repo: 'https://github.com/Kitware/minerva.git'
+        dest: /girder/plugins/minerva
+        update: no
+
+    - name: git clone gaia
+      git:
+        repo: 'https://github.com/OpenDataAnalytics/gaia.git'
+        dest: /girder/plugins/gaia
+
+    - name: git clone gaia_minerva
+      git:
+        repo: 'https://github.com/OpenDataAnalytics/gaia_minerva.git'
+        dest: /girder/plugins/gaia_minerva
+        force: yes
+
+    - name: copy bsve folder
+      copy:
+        src: bsve
+        dest: /girder/plugins/bsve
+
+    - name: install minerva requirements
+      pip:
+        requirements: /girder/plugins/minerva/requirements.txt
+
+    - name: install minerva
+      command: pip install -e /girder/plugins/minerva/.
+
+    - name: install gaia requirements
+      pip:
+        requirements: /girder/plugins/gaia/requirements.txt
+
+    - name: install gaia
+      command: pip install -e /girder/plugins/gaia/.
+
+    - name: install gaia_minerva
+      command: pip install -e /girder/plugins/gaia_minerva/.
+
+    - name: install latest requests w/security
+      command: pip install --upgrade requests[security]
+
+    - name: remove git files
+      command: rm -fr /girder/plugins/*/.git
+
+    - name: Install grunt-cli
+      command: npm install -g grunt-cli
+      args:
+        chdir: /girder
+
+    - name: Install grunt
+      command: npm install grunt
+      args:
+        chdir: /girder
+
+    - name: nodejs -> node
+      command: ln -s /usr/bin/nodejs /usr/bin/node
+
+    - name: web install
+      command: girder-install web
+      args:
+        chdir: /girder
+
+    - name: copy girder config
+      copy:
+        src: templates/girder.local.cfg
+        dest: /girder/girder/conf/girder.local.cfg
+
+  post_tasks:
+    - name: Start girder
+      shell: python -m girder -p 8080 > /dev/null 2>&1 &
+      args:
+        chdir: /girder
+      async: 600
+      poll: 0
+
+    - name: Pause while girder starts
+      pause:
+        seconds: 30
+
+    - name: Create admin user
+      girder:
+        port: 8080
+        user:
+          firstName: Girder
+          lastName: Administrator
+          login: "{{girder_user}}"
+          password: "{{girder_password}}"
+          email: "{{girder_email}}"
+          admin: yes
+        state: present
+      sudo: true
+
+    - name: Setup filesystem assetstore
+      girder:
+        port: 8080
+        username: "{{girder_user}}"
+        password: "{{girder_password}}"
+        assetstore:
+          name: Primary assetstore
+          type: filesystem
+          root: "{{girder_asset_root}}"
+          current: true
+        state: present
+
+    - name: Enable plugins
+      girder:
+        port: 8080
+        username: "{{girder_user}}"
+        password: "{{girder_password}}"
+        plugins:
+          - minerva
+          - gaia_minerva
+        state: present
+      sudo: true
+
+    - name: Setup gaia_minerva interface
+      shell: python import_analyses.py --username girder --password girder --host localhost --port 8080 --path ../../gaia_minerva/analyses/gaia/
+      args:
+        chdir: /girder/plugins/minerva/utility
