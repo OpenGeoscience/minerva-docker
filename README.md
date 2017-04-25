@@ -24,11 +24,12 @@ software that powers Minerva.  Now that you are logged in with the admin user, g
 then the Plugins page, enable the Minerva plugin and restart the server.  Once the server is restarted, return to the root page in the browser address bar and refresh the page.  You should see the Minerva application at this point, and you will still be logged in as the admin user you created for Girder.
 
 
-## Option 2: Deploy with docker-compose
+## Option 2: Deploy with ansible-container
 Set the three Girder environment variables in ansible/variables.yml to the correct values for a
 set of working Girder credentials.  This will be the account that Minerva uses to connect with
 Girder.
 
+    pip install ansible-container==0.3.0
     export DOCKER_CLIENT_TIMEOUT=600
     ansible-container build
     ansible-container run
