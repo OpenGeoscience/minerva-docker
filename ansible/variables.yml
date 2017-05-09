@@ -1,0 +1,4 @@
+girder_user: "girder"
+girder_password: "girder"
+girder_email: "girder@girder.com"
+girder_asset_root: "/girder/assetstore"

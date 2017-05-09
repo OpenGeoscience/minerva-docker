@@ -1,0 +1,20 @@
+version: "2"
+services:
+  mongodb:
+      image: mongo:3.0
+      ports:
+          - "27017"
+      volumes:
+          - "/data/db"
+      entrypoint: ["docker-entrypoint.sh", "mongod"]
+
+  minerva:
+      image: ubuntu:16.04
+      ports:
+          - "8080:8080"
+      links:
+          - "mongodb:mongodb"
+      entrypoint: ['python', '-m', 'girder', '-d', 'mongodb://mongodb:27017/girder']
+
+
+registries: {}
