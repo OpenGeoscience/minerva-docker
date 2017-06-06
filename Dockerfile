@@ -5,11 +5,13 @@ ENV CPLUS_INCLUDE_PATH=/usr/include/gdal
 ENV C_INCLUDE_PATH=/usr/include/gdal
 
 ADD minerva /girder/plugins/minerva
+ADD girder_db_items /girder/plugins/database_assetstore
 ADD ansible/bsve /girder/plugins/bsve
 ADD gaia /girder/gaia
 ADD gaia_minerva /girder/plugins/gaia_minerva
 
 RUN pip install -r /girder/plugins/minerva/requirements.txt
+RUN pip install -r /girder/plugins/database_assetstore/requirements.txt
 RUN pip install -e /girder/gaia -r /girder/gaia/requirements.txt
 
 RUN rm -fr /girder/plugins/*/.git /girder/gaia/*/.git
