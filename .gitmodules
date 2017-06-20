@@ -7,3 +7,6 @@
 [submodule "gaia_minerva"]
 	path = gaia_minerva
 	url = git@github.com:OpenDataAnalytics/gaia_minerva.git
+[submodule "girder_db_items"]
+	path = girder_db_items
+	url = git://github.com/opengeoscience/girder_db_items.git
