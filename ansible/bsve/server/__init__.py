@@ -1,6 +1,7 @@
 from girder import events
 from . import bsve_wms
 from .feature import callBsveFeatureInfo
+from .twofishes import autocomplete
 
 from .auth import Authentication
 from .test import TestEndpoint
@@ -14,6 +15,14 @@ def get_layer_info(event):
     event.preventDefault()
     response = callBsveFeatureInfo(event.info['params'],
                                    event.info['layers'])
+    event.addResponse(response)
+
+def get_autocomplete_result(event):
+    if 'bsve' not in event.info['twofishes']:
+        return
+
+    event.preventDefault()
+    response = autocomplete(event.info)
     event.addResponse(response)
 
 
@@ -31,3 +40,4 @@ def load(info):
     info['apiRoot'].test = TestEndpoint()
 
     events.bind('minerva.get_layer_info', 'bsve', get_layer_info)
+    events.bind('minerva.autocomplete', 'bsve', get_autocomplete_result)
