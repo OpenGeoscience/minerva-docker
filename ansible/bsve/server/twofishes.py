@@ -1,5 +1,5 @@
 from girder.plugins.minerva.utility.cookie import getExtraHeaders
-from girder.plugins.minerva.twofishes import Twofishes
+from girder.plugins.minerva.rest.twofishes import TwoFishes
 from . import logged_requests as requests
 from .cookie import bsveRoot
 
@@ -28,5 +28,20 @@ def get_geojson(params):
 
     geojson = TwoFishes.createGeojson(twofishesUrl, locations,
                                       headers=headers)
+
+    return geojson
+
+def post_geojson(params):
+    """Call twofishes instance that creates a minerva dataset inside bsve"""
+
+    twofishesUrl = bsveRoot() + "/geocoder"
+    headers = getExtraHeaders()
+
+    try:
+        locationInfo = json.loads(params['locations'])
+        geojson = TwoFishes.createGeojson(twofishesUrl, locationInfo)
+    except ValueError:
+        locationInfo = params['locations']
+        geojson = TwoFishes.createGeojson(twofishesUrl, locationInfo)
 
     return geojson
