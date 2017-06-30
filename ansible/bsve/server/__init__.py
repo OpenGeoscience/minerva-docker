@@ -1,7 +1,7 @@
 from girder import events
 from . import bsve_wms
 from .feature import callBsveFeatureInfo
-from .twofishes import autocomplete
+from .twofishes import autocomplete, get_geojson
 
 from .auth import Authentication
 from .test import TestEndpoint
@@ -25,6 +25,14 @@ def get_autocomplete_result(event):
     response = autocomplete(event.info)
     event.addResponse(response)
 
+def get_geojson_result(event):
+    if 'bsve' not in event.info['twofishes']:
+        return
+
+    event.preventDefault()
+    response = get_geojson(event.info)
+    event.addResponse(response)
+
 
 def load(info):
 
@@ -41,3 +49,4 @@ def load(info):
 
     events.bind('minerva.get_layer_info', 'bsve', get_layer_info)
     events.bind('minerva.autocomplete', 'bsve', get_autocomplete_result)
+    events.bind('minerva.get_geojson', 'bsve', get_geojson_result)

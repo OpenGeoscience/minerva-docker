@@ -1,4 +1,5 @@
 from girder.plugins.minerva.utility.cookie import getExtraHeaders
+from girder.plugins.minerva.twofishes import Twofishes
 from . import logged_requests as requests
 from .cookie import bsveRoot
 
@@ -17,3 +18,15 @@ def autocomplete(params):
                        headers=headers)
 
     return req.content
+
+def get_geojson(params):
+    """Call twofishes instance that runs inside bsve for getting a geojson"""
+
+    twofishesUrl = bsveRoot() + "/geocoder"
+    headers = getExtraHeaders()
+    locations = json.loads(params['locations'])
+
+    geojson = TwoFishes.createGeojson(twofishesUrl, locations,
+                                      headers=headers)
+
+    return geojson
