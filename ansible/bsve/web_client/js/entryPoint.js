@@ -212,17 +212,6 @@ minerva.events.on('g:appload.after', function () {
                 name: 'default',
                 description: 'Default session for the BSVE'
             }).once('g:saved', function () {
-                // disable job and analysis panels
-                session.metadata({
-                    'layout': {
-                        'm-analysis-panel': {
-                            'disabled': true
-                        },
-                        'm-jobs-panel': {
-                            'disabled': true
-                        }
-                    }
-                });
                 session.once('m:session_saved', function () {
                     defer.resolve(session.attributes);
                 }).createSessionMetadata();
