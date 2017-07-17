@@ -14,6 +14,7 @@ ADD gaia_minerva /girder/plugins/gaia_minerva
 RUN pip install -r /girder/plugins/minerva/requirements.txt
 RUN pip install -r /girder/plugins/database_assetstore/requirements.txt
 RUN pip install -e /girder/gaia -r /girder/gaia/requirements.txt
+RUN pip install -e /girder/plugins/gaia_minerva
 
 RUN rm -fr /girder/plugins/*/.git /girder/gaia/*/.git
 RUN grunt --debug-js=true init default
