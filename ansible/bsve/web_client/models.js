@@ -1,6 +1,11 @@
-minerva.models.BsveDatasetModel = minerva.models.WmsDatasetModel.extend({
+import { restRequest } from 'girder/rest';
+
+import WmsDatasetModel from '../../minerva/web_external/models/WmsDatasetModel';
+
+
+const BsveDatasetModel = WmsDatasetModel.extend({
     createBsveDataset: function (params) {
-        girder.restRequest({
+        restRequest({
             path: '/bsve_datasets_wms',
             type: 'POST',
             data: params,
@@ -15,3 +20,4 @@ minerva.models.BsveDatasetModel = minerva.models.WmsDatasetModel.extend({
         return this;
     }
 });
+export default BsveDatasetModel;

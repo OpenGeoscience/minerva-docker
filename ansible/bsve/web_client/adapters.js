@@ -1,9 +1,11 @@
-minerva.rendering.geo.BSVERepresentation = minerva.rendering.geo.defineMapLayer('bsve', function () {
+import { rendering } from '../../minerva/web_external/views/adapters/Adapters';
+
+rendering.geo.BSVERepresentation = rendering.geo.defineMapLayer('bsve', function () {
     /**
      * Async function to define a rendered GeoJs wms layer for the passed in dataset.
      *
      * @param {Object} container - An implementor of the MapContainer interface
-     * @param {minerva.models.DatasetModel} dataset - The dataset to be rendered
+     * @param {DatasetModel} dataset - The dataset to be rendered
      * @fires 'm:map_layer_renderable' event upon successful layer render definition
      * @fires 'm:map_layer_error' event upon an error defining the layer rendering
      */
@@ -131,4 +133,4 @@ minerva.rendering.geo.BSVERepresentation = minerva.rendering.geo.defineMapLayer(
         );
         this.trigger('m:map_layer_renderable', this);
     };
-}, minerva.rendering.geo.MapRepresentation);
+}, rendering.geo.MapRepresentation);

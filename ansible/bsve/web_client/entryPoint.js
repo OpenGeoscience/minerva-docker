@@ -1,4 +1,19 @@
-minerva.events.on('g:appload.after', function () {
+import events from 'girder/events';
+import { restRequest } from 'girder/rest';
+import { wrap } from 'girder/utilities/PluginUtils';
+import { setCurrentUser, setCurrentToken } from 'girder/auth';
+import UserModel from 'girder/models/UserModel';
+
+import BsveDatasetModel from './models';
+import minervaEvents from '../../minerva/web_external/events';
+import SessionModel from '../../minerva/web_external/models/SessionModel';
+import router from '../../minerva/web_external/router';
+import App from '../../minerva/web_external/App';
+import LayersPanel from '../../minerva/web_external/views/body/LayersPanel';
+import DataPanel from '../../minerva/web_external/views/body/DataPanel';
+
+
+events.on('g:appload.after', function () {
 
     window.bsve_root = function () {
         var appRoot = BSVE.api.appRoot();
@@ -15,13 +30,13 @@ minerva.events.on('g:appload.after', function () {
 
     function init_reference_data(collection) {
 
-        var wmsSource = new minerva.models.BsveDatasetModel({});
+        var wmsSource = new BsveDatasetModel({});
         wmsSource.on('m:wmsDatasetAdded', function (datasets) {
             _.each(datasets, function (dataset) {
                 collection.add(dataset, {silent: true});
                 collection.trigger('add');
             });
-            minerva.events.trigger('m:updateDatasets');
+            events.trigger('m:updateDatasets');
             remove_spinner();
         }).on('m:error', function (err) {
             console.log('Error adding reference data ' + err);
@@ -31,7 +46,7 @@ minerva.events.on('g:appload.after', function () {
                 timeout: 5000,
                 icon: 'attention'
             };
-            girder.events.trigger('g:alert', info);
+            events.trigger('g:alert', info);
             remove_spinner();
         }).createBsveDataset({
             name: 'Reference',
@@ -75,7 +90,7 @@ minerva.events.on('g:appload.after', function () {
                 // Need to wait somehow for the Minerva app to be ready before triggering.
                 if (currentRequestId !== previousRequestId) {
                     // This must be a new query that we haven't yet triggered.
-                    minerva.events.trigger('m:federated_search', query);
+                    minervaEvents.events.trigger('m:federated_search', query);
                     previousRequestId = currentRequestId;
                     // This could probably be combined with the logic below to
                     // stop polling, but there wasn't time to think it through.
@@ -140,7 +155,7 @@ minerva.events.on('g:appload.after', function () {
                                         'name': sourceType + ' - ' + geojsonData.features.length
                                     }
                                     sourceTypeFeatures[sourceType] = geojsonData.features.length;
-                                    minerva.events.trigger('m:addExternalGeoJSON', {
+                                    minervaEvents.events.trigger('m:addExternalGeoJSON', {
                                         name: gjObj.name,
                                         data: gjObj.geojson
                                     });
@@ -164,7 +179,7 @@ minerva.events.on('g:appload.after', function () {
 
     function data_exchange_handler() {
         BSVE.api.exchange.receive(function (data) {
-            minerva.events.trigger('m:addExternalGeoJSON', {
+            events.trigger('m:addExternalGeoJSON', {
                 name: data.name || 'Imported',
                 data: data
             });
@@ -175,15 +190,15 @@ minerva.events.on('g:appload.after', function () {
         var user = resp;
         var folder;
 
-        girder.currentUser = new girder.models.UserModel(user);
-        girder.currentToken = user.authToken.token;
-        girder.events.trigger('g:login.success', user);
-        girder.events.trigger('g:login', user);
+        setCurrentUser(new UserModel(user));
+        setCurrentToken(user.authToken.token);
+        events.trigger('g:login.success', user);
+        events.trigger('g:login', user);
 
-        var session = new minerva.models.SessionModel();
+        var session = new SessionModel();
 
         // get the minerva folder id
-        girder.restRequest({
+        restRequest({
             path: 'minerva_session/folder',
             data: {
                 userId: user._id
@@ -192,7 +207,7 @@ minerva.events.on('g:appload.after', function () {
             folder = resp.folder;
 
             // get the default session, if it exists
-            return girder.restRequest({
+            return restRequest({
                 path: 'minerva_session',
                 data: {
                     userId: user._id,
@@ -225,11 +240,11 @@ minerva.events.on('g:appload.after', function () {
             };
             session.set(resp);
             session.once('m:metadata_saved', function () {
-                girder.events.once('g:navigateTo', function (view, obj) {
+                events.once('g:navigateTo', function (view, obj) {
                     var datasets = obj.datasetsCollection;
                     init_reference_data(datasets);
                 });
-                minerva.router.navigate('session/' + session.id, {trigger: true});
+                router.navigate('session/' + session.id, {trigger: true});
             }).saveMinervaMetadata(resp.meta.minerva);
         });
     }
@@ -303,7 +318,7 @@ minerva.events.on('g:appload.after', function () {
             var auth = 'Basic ' + window.btoa(user + ':' + authTicket);
 
             // log in to minerva using bsve credentials
-            girder.restRequest({
+            restRequest({
                 path: 'bsve/authentication',
                 data: {
                     apiroot: 'https:' + BSVE.api.appRoot() + '/api'
@@ -328,7 +343,7 @@ minerva.events.on('g:appload.after', function () {
 });
 
 // we don't want a header so remove the header element on the main app
-girder.wrap(minerva.App, 'render', function (render) {
+wrap(App, 'render', function (render) {
     render.call(this);
     this.$('#m-app-header-container').remove();
 });
@@ -336,17 +351,17 @@ girder.wrap(minerva.App, 'render', function (render) {
 // also remove the session header from the session view
 // this happens async so we need to do it on the pre-render
 // event
-girder.events.on('m:pre-render-panel-groups', function () {
+events.on('m:pre-render-panel-groups', function () {
     $('.m-session-header').remove();
 });
 
 // remove the button to remove panels from the session
-girder.wrap(minerva.views.LayersPanel, 'render', function (render) {
+wrap(LayersPanel, 'render', function (render) {
     render.call(this);
     this.$('.m-remove-panel').remove();
 });
 
-girder.wrap(minerva.views.DataPanel, 'render', function (render) {
+wrap(DataPanel, 'render', function (render) {
     render.call(this);
     this.$('.m-remove-panel').remove();
 });

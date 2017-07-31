@@ -17,4 +17,4 @@ RUN pip install -e /girder/gaia -r /girder/gaia/requirements.txt
 RUN pip install -e /girder/plugins/gaia_minerva
 
 RUN rm -fr /girder/plugins/*/.git /girder/gaia/*/.git
-RUN grunt --debug-js=true init default
+RUN girder-install web --dev --plugins minerva,gaia_minerva,bsve
