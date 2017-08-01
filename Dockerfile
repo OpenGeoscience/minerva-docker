@@ -1,4 +1,4 @@
-FROM jbeezley/girder:1.7ubuntu
+FROM girder/girder:2.2.0
 RUN add-apt-repository ppa:ubuntugis/ppa
 RUN apt update
 RUN apt install -y python-gdal libgdal-dev
