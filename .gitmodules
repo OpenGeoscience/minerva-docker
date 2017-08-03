@@ -3,10 +3,10 @@
 	url = https://github.com/Kitware/minerva.git
 [submodule "gaia"]
 	path = gaia
-	url = git@github.com:OpenDataAnalytics/gaia.git
+	url = https://github.com/OpenDataAnalytics/gaia.git
 [submodule "gaia_minerva"]
 	path = gaia_minerva
-	url = git@github.com:OpenDataAnalytics/gaia_minerva.git
+	url = https://github.com/OpenDataAnalytics/gaia_minerva.git
 [submodule "girder_db_items"]
 	path = girder_db_items
-	url = git://github.com/opengeoscience/girder_db_items.git
+	url = https://github.com/OpenGeoscience/database_assetstore.git
