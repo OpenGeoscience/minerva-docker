@@ -1,19 +1,21 @@
+import $ from 'jquery';
 import events from 'girder/events';
 import { restRequest } from 'girder/rest';
 import { wrap } from 'girder/utilities/PluginUtils';
 import { setCurrentUser, setCurrentToken } from 'girder/auth';
 import UserModel from 'girder/models/UserModel';
-
 import BsveDatasetModel from './models';
-import minervaEvents from '../../minerva/web_external/events';
-import SessionModel from '../../minerva/web_external/models/SessionModel';
-import router from '../../minerva/web_external/router';
-import App from '../../minerva/web_external/App';
-import LayersPanel from '../../minerva/web_external/views/body/LayersPanel';
-import DataPanel from '../../minerva/web_external/views/body/DataPanel';
+import './stylesheets/panelGroup.styl';
+
+const minervaEvents = minerva.events;
+const SessionModel = minerva.models.SessionModel;
+const router = minerva.router;
+const App = minerva.App;
+const LayersPanel = minerva.views.body.LayersPanel;
+const DataPanel = minerva.views.body.DataPanel;
 
 
-events.on('g:appload.after', function () {
+minervaEvents.on('g:appload.after', function () {
 
     window.bsve_root = function () {
         var appRoot = BSVE.api.appRoot();
@@ -36,7 +38,7 @@ events.on('g:appload.after', function () {
                 collection.add(dataset, {silent: true});
                 collection.trigger('add');
             });
-            events.trigger('m:updateDatasets');
+            minervaEvents.trigger('m:updateDatasets');
             remove_spinner();
         }).on('m:error', function (err) {
             console.log('Error adding reference data ' + err);
@@ -90,7 +92,7 @@ events.on('g:appload.after', function () {
                 // Need to wait somehow for the Minerva app to be ready before triggering.
                 if (currentRequestId !== previousRequestId) {
                     // This must be a new query that we haven't yet triggered.
-                    minervaEvents.events.trigger('m:federated_search', query);
+                    minervaEvents.trigger('m:federated_search', query);
                     previousRequestId = currentRequestId;
                     // This could probably be combined with the logic below to
                     // stop polling, but there wasn't time to think it through.
@@ -155,7 +157,7 @@ events.on('g:appload.after', function () {
                                         'name': sourceType + ' - ' + geojsonData.features.length
                                     }
                                     sourceTypeFeatures[sourceType] = geojsonData.features.length;
-                                    minervaEvents.events.trigger('m:addExternalGeoJSON', {
+                                    minervaEvents.trigger('m:addExternalGeoJSON', {
                                         name: gjObj.name,
                                         data: gjObj.geojson
                                     });
