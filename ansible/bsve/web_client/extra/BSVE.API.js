@@ -51,7 +51,7 @@ var BSVE = BSVE || {};
 			// load fontawesome
 			l = document.createElement('link');
 			l.rel="stylesheet";
-			l.href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css";
+			l.href="//cdn.bsvecosystem.net/vendor/font-awesome/4.3.0/css/font-awesome.min.css";
 			document.getElementsByTagName('head')[0].appendChild(l);
 
 			// Load jquery if not loaded already
