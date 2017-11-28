@@ -7,6 +7,9 @@
 [submodule "gaia_minerva"]
 	path = gaia_minerva
 	url = https://github.com/OpenDataAnalytics/gaia_minerva.git
-[submodule "girder_db_items"]
-	path = girder_db_items
+[submodule "database_assetstore"]
+	path = database_assetstore
 	url = https://github.com/OpenGeoscience/database_assetstore.git
+[submodule "girder_ktile"]
+	path = girder_ktile
+	url = https://github.com/OpenGeoscience/girder_ktile.git

@@ -29,7 +29,7 @@ RUN apt-get update && apt-get install -qy software-properties-common python-soft
     python-pip \
     libldap2-dev
 
-RUN git clone https://github.com/girder/girder.git && cd girder && git checkout 2.3.0 && rm -fr .git
+RUN git clone https://github.com/girder/girder.git && cd girder && git checkout v2.4.0 && rm -fr .git
 WORKDIR /girder
 
 RUN pip install -e .[plugins]
