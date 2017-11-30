@@ -13,6 +13,7 @@ const router = minerva.router;
 const App = minerva.App;
 const LayersPanel = minerva.views.body.LayersPanel;
 const DataPanel = minerva.views.body.DataPanel;
+const MapPanel = minerva.views.map.MapPanel;
 
 
 minervaEvents.on('g:appload.after', function () {
@@ -295,7 +296,6 @@ minervaEvents.on('g:appload.after', function () {
 
         BSVE.init(function() {
             remove_bsve_css();
-
             show_spinner();
 
             console.log('BSVE.init callback');

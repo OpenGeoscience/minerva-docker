@@ -1,6 +1,8 @@
-import { rendering } from '../../minerva/web_external/views/adapters/Adapters';
+// import from base Minerva should be used carefully because currently the imported script and its dependancy will be duplicated into this plugin
+import registry from '../../minerva/web_external/views/adapters/registry';
+import MapRepresentation from '../../minerva/web_external/views/adapters/MapRepresentation';
 
-rendering.geo.BSVERepresentation = rendering.geo.defineMapLayer('bsve', function () {
+class BSVERepresentation extends MapRepresentation {
     /**
      * Async function to define a rendered GeoJs wms layer for the passed in dataset.
      *
@@ -9,7 +11,7 @@ rendering.geo.BSVERepresentation = rendering.geo.defineMapLayer('bsve', function
      * @fires 'm:map_layer_renderable' event upon successful layer render definition
      * @fires 'm:map_layer_error' event upon an error defining the layer rendering
      */
-    this.init = function (container, dataset) {
+    init(container, dataset) {
         var bsveapi = bsve_root();
         this.geoJsLayer = container.createLayer('osm', {
             attribution: null,
@@ -24,7 +26,7 @@ rendering.geo.BSVERepresentation = rendering.geo.defineMapLayer('bsve', function
 
         this.geoJsLayer.url(
             _.bind(function (x, y, zoom) {
-                var bb = this.geoJsLayer.gcsTileBounds({x: x, y: y, level: zoom}, projection);
+                var bb = this.geoJsLayer.gcsTileBounds({ x: x, y: y, level: zoom }, projection);
                 var bbox_mercator = bb.left + ',' + bb.bottom + ',' + bb.right + ',' + bb.top;
                 var filter = [
                     'names eq',
@@ -59,7 +61,8 @@ rendering.geo.BSVERepresentation = rendering.geo.defineMapLayer('bsve', function
                             typeName: minervaMetadata.sld_params.typeName,
                             redChannel: minervaMetadata.sld_params.redChannel.split(':')[0].toString(),
                             greenChannel: minervaMetadata.sld_params.greenChannel.split(':')[0].toString(),
-                            blueChannel: minervaMetadata.sld_params.blueChannel.split(':')[0].toString()});
+                            blueChannel: minervaMetadata.sld_params.blueChannel.split(':')[0].toString()
+                        });
                     } else if (minervaMetadata.sld_params.subType === 'singleband') {
                         min = parseFloat(minervaMetadata.sld_params.min);
                         max = parseFloat(minervaMetadata.sld_params.max);
@@ -84,7 +87,9 @@ rendering.geo.BSVERepresentation = rendering.geo.defineMapLayer('bsve', function
                         var colorMapEntry = _.map(colorValuePairs, function (pair) {
                             return colorMapTemplate({
                                 color: pair[1],
-                                value: pair[0] }); }).join('');
+                                value: pair[0]
+                            });
+                        }).join('');
                         sld_body = singleband_template({
                             typeName: minervaMetadata.sld_params.typeName,
                             colorMapEntry: colorMapEntry,
@@ -105,7 +110,9 @@ rendering.geo.BSVERepresentation = rendering.geo.defineMapLayer('bsve', function
                         var colorValueMapping = _.map(colorValuePairs, function (pair) {
                             return colorMapTemplate({
                                 color: pair[1],
-                                value: pair[0]}); }).join('');
+                                value: pair[0]
+                            });
+                        }).join('');
 
                         if (minervaMetadata.sld_params.subType === 'point') {
                             var marker = minervaMetadata.sld_params.marker;
@@ -113,17 +120,20 @@ rendering.geo.BSVERepresentation = rendering.geo.defineMapLayer('bsve', function
                                 typeName: minervaMetadata.sld_params.typeName,
                                 colorValueMapping: colorValueMapping,
                                 attribute: attribute,
-                                marker: marker });
+                                marker: marker
+                            });
                         } else if (minervaMetadata.sld_params.subType === 'line') {
                             sld_body = line_template({
                                 typeName: minervaMetadata.sld_params.typeName,
                                 colorValueMapping: colorValueMapping,
-                                attribute: attribute });
+                                attribute: attribute
+                            });
                         } else {
                             sld_body = polygon_template({
                                 typeName: minervaMetadata.sld_params.typeName,
                                 colorValueMapping: colorValueMapping,
-                                attribute: attribute});
+                                attribute: attribute
+                            });
                         }
                     }
                     filter += " and sld_body eq '" + sld_body + "'";
@@ -133,4 +143,8 @@ rendering.geo.BSVERepresentation = rendering.geo.defineMapLayer('bsve', function
         );
         this.trigger('m:map_layer_renderable', this);
     };
-}, rendering.geo.MapRepresentation);
+}
+
+registry.register('bsve', BSVERepresentation);
+
+export default BSVERepresentation;
