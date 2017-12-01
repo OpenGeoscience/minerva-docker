@@ -367,3 +367,8 @@ wrap(DataPanel, 'render', function (render) {
     render.call(this);
     this.$('.m-remove-panel').remove();
 });
+
+wrap(MapPanel, 'render', function (render) {
+    render.call(this);
+    this.colorLegend.position({ right: 10, top: 10 });
+});
