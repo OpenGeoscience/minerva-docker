@@ -19,7 +19,7 @@ def get_layer_info(event):
 
 def load(info):
 
-    urls = ['//dev-developer.bsvecosystem.net/sdk/api/BSVE.API.js']
+    urls = ['/static/built/plugins/bsve/extra/BSVE.API.js']
     events.trigger('minerva.additional_js_urls', urls)
 
     info['apiRoot'].bsve = Authentication()
