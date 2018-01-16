@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import events from 'girder/events';
+import eventStream from 'girder/utilities/EventStream';
 import { restRequest } from 'girder/rest';
 import { wrap } from 'girder/utilities/PluginUtils';
 import { setCurrentUser, setCurrentToken } from 'girder/auth';
@@ -34,11 +35,7 @@ minervaEvents.on('g:appload.after', function () {
     function init_reference_data(collection) {
 
         var wmsSource = new BsveDatasetModel({});
-        wmsSource.on('m:wmsDatasetAdded', function (datasets) {
-            _.each(datasets, function (dataset) {
-                collection.add(dataset, {silent: true});
-                collection.trigger('add');
-            });
+        wmsSource.on('m:wmsDatasetAdded', function () {
             minervaEvents.trigger('m:updateDatasets');
             remove_spinner();
         }).on('m:error', function (err) {
@@ -54,6 +51,35 @@ minervaEvents.on('g:appload.after', function () {
         }).createBsveDataset({
             name: 'Reference',
         });
+
+        eventStream.on('g:event.bsveDatasetUpdating', (event) => {
+            minervaEvents.trigger('m:updateDatasets');
+            var info = {
+                text: 'Start import reference data',
+                type: 'info',
+                timeout: 5000,
+                icon: 'attention'
+            };
+            events.trigger('g:alert', info);
+        }).on('g:event.bsveDatasetUpdated', (event) => {
+            minervaEvents.trigger('m:updateDatasets');
+            var info = {
+                text: 'Reference data import complete',
+                type: 'info',
+                timeout: 5000,
+                icon: 'attention'
+            };
+            events.trigger('g:alert', info);
+        }).on('g:event.bsveDatasetError', (event) => {
+            console.log('Error adding reference data ' + err);
+            var info = {
+                text: 'An error occurred while initialization the reference layers.  Try reloading the page.',
+                type: 'danger',
+                timeout: 5000,
+                icon: 'attention'
+            };
+            events.trigger('g:alert', info);
+        })
     }
 
     function bsve_search_handler() {
@@ -61,7 +87,7 @@ minervaEvents.on('g:appload.after', function () {
          * Create a search submit handler.
          * The provided callback function will be executed when a fed search is performed.
          */
-        BSVE.api.search.submit(function(query) {
+        BSVE.api.search.submit(function (query) {
             // There are several problems here that will need to be rethought.
             // 1) We may get this search callback before the Minerva app is ready
             // 2) Due to polling, we may have a pollSearch callback executed after
@@ -98,35 +124,34 @@ minervaEvents.on('g:appload.after', function () {
                     // This could probably be combined with the logic below to
                     // stop polling, but there wasn't time to think it through.
                 }
-                BSVE.api.get('/api/search/result?requestId=' + query.requestId, function(response) {
+                BSVE.api.get('/api/search/result?requestId=' + query.requestId, function (response) {
                     var status;
                     // Store available data source types for reference.
-                    if ( !dataSources ) {
+                    if (!dataSources) {
                         dataSources = response.availableSourceTypes;
                     }
 
-                    for ( var i = dataSources.length - 1; i >= 0; i-- ) {
+                    for (var i = dataSources.length - 1; i >= 0; i--) {
                         // Check each data source in the result.
                         status = response.sourceTypeResults[dataSources[i]].status;
-                        if ( status === 4 || status === 12)
-                        {
+                        if (status === 4 || status === 12) {
                             // Supposedly this source type is done, but it may not actually be.
                             // Fetch updated geoJSON and remove this data source from list.
-                            var dataSource = dataSources.splice(i,1);
+                            var dataSource = dataSources.splice(i, 1);
                             getGeoJSON(query, dataSource[0]);
                         }
                     }
 
                     if (dataSources.length) {
                         if (currentRequestId != query.requestId || finishedCurrentRequest) {
-                            if(currentRequestId != query.requestId) {
+                            if (currentRequestId != query.requestId) {
                                 console.log('stop polling bc of requestId');
                             } else {
                                 console.log('stop polling bc of finished');
                             }
                         } else {
                             // continue polling since there are still in progress sources
-                            setTimeout(function(){ pollSearch(query); }, 2000);
+                            setTimeout(function () { pollSearch(query); }, 2000);
                         }
                     }
                 });
@@ -134,9 +159,8 @@ minervaEvents.on('g:appload.after', function () {
 
             function getGeoJSON(query, dataSourceName) {
                 console.log('GeoViz calling getGeoJSON');
-                BSVE.api.get('/api/search/util/geomap/geojson/' + query.requestId + '/all', function(response)
-                {
-                    console.log('Geojson response for '+dataSourceName);
+                BSVE.api.get('/api/search/util/geomap/geojson/' + query.requestId + '/all', function (response) {
+                    console.log('Geojson response for ' + dataSourceName);
                     if (response.features && response.features.length > 0) {
                         var groupedBySourceType = _.groupBy(response.features, function (feature) {
                             return feature.properties.SourceType;
@@ -166,7 +190,7 @@ minervaEvents.on('g:appload.after', function () {
                                 // Assume this means we got some request data back.
                                 finishedCurrentRequest = true;
                             } else {
-                                console.log('No features for '+ sourceType);
+                                console.log('No features for ' + sourceType);
                             }
                         });
                     } else {
@@ -247,7 +271,7 @@ minervaEvents.on('g:appload.after', function () {
                     var datasets = obj.datasetsCollection;
                     init_reference_data(datasets);
                 });
-                router.navigate('session/' + session.id, {trigger: true});
+                router.navigate('session/' + session.id, { trigger: true });
             }).saveMinervaMetadata(resp.meta.minerva);
         });
     }
@@ -294,7 +318,7 @@ minervaEvents.on('g:appload.after', function () {
     if (typeof BSVE !== 'undefined') {
         console.log('BSVE JS object exists');
 
-        BSVE.init(function() {
+        BSVE.init(function () {
             remove_bsve_css();
             show_spinner();
 

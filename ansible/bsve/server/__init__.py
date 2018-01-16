@@ -5,7 +5,6 @@ from .feature import callBsveFeatureInfo
 from .auth import Authentication
 from .test import TestEndpoint
 
-
 def get_layer_info(event):
     # if a baseUrl is present, this is not a bsve data source
     if event.info.get('baseUrl'):
