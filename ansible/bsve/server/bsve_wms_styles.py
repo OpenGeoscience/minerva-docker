@@ -2,24 +2,24 @@ import xml.etree.ElementTree as ET
 from urllib import quote
 
 from girder.plugins.minerva.rest.wms_styles import WmsStyle, wps_template
-from girder.plugins.minerva.utility.cookie import getExtraHeaders
 
 from . import logged_requests as requests
-from .cookie import bsveRoot
 
 
 class BsveWmsStyle(object):
-    def __init__(self, type_name):
+
+    def __init__(self, type_name, bsveRoot='', extraHeaders=None):
         self._type_name = type_name
+        self.bsveRoot = bsveRoot
+        self.extraHeaders = extraHeaders
 
     def _get_min_max_count(self, attribute):
         """Gets the min max and count values for a given
         numeric attribute
         """
 
-        root = bsveRoot()
-        url = root + "/data/v2/sources/geoprocessing/request"
-        headers = getExtraHeaders()
+        url = self.bsveRoot + "/data/v2/sources/geoprocessing/request"
+        headers = self.extraHeaders.copy()
         headers.update({'Content-Type': 'application/xml'})
         xml_data = wps_template(self._type_name, attribute)
         res = requests.post(url,
@@ -70,13 +70,14 @@ class BsveWmsStyle(object):
 
         layer_params = {}
 
-        root = bsveRoot()
+        root = self.bsveRoot
         base_bsve = root + "/data/v2/sources/"
-        headers = getExtraHeaders()
+        headers = self.extraHeaders.copy()
 
         if layer_type == 'vector':
             bsve_wfs = base_bsve + "geofeatures/data/result?"
-            wfs_qs = quote("$filter=name eq {} and request eq describefeaturetype&$format=text/xml; subtype=gml/3.1.1".format(self._type_name), safe='=&$ ').replace(' ', '+')
+            wfs_qs = quote("$filter=name eq {} and request eq describefeaturetype&$format=text/xml; subtype=gml/3.1.1".format(
+                self._type_name), safe='=&$ ').replace(' ', '+')
             resp = requests.get(bsve_wfs + wfs_qs, headers=headers)
             tree = ET.fromstring(resp.content)
             layer_params['layerType'] = layer_type
@@ -85,7 +86,7 @@ class BsveWmsStyle(object):
 
         elif layer_type == 'raster':
             wcs_url = base_bsve + \
-                      "geocoverage/data/result?$filter=identifiers eq {}".format(self._type_name)
+                "geocoverage/data/result?$filter=identifiers eq {}".format(self._type_name)
             resp = requests.get(wcs_url, headers=headers)
             tree = ET.fromstring(resp.content)
             sub_type, bands = WmsStyle._get_bands(tree)
