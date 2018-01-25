@@ -372,6 +372,7 @@ minervaEvents.on('g:appload.after', function () {
 wrap(App, 'render', function (render) {
     render.call(this);
     this.$('#m-app-header-container').remove();
+    this.$('#g-app-body-container').css('padding-top', 0);
 });
 
 // also remove the session header from the session view
