@@ -66,6 +66,7 @@ services:
         MAKE_PARALLELISM: "${MAKE_PARALLELISM}"
     volumes:
       - "/tmp:/tmp"
+      - "./etc/girder.local.cfg:/girder/girder/conf/girder.local.cfg"
     depends_on:
       - broker
     links:

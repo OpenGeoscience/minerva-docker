@@ -10,7 +10,7 @@ RUN apt-get update                                         \
  && apt-get update                                         \
  && add-apt-repository ppa:ubuntugis/ppa                   \
  && apt-get install -qy curl                               \
- && curl -sL https://deb.nodesource.com/setup_6.x | bash - \
+ && curl -sL https://deb.nodesource.com/setup_8.x | bash - \
  && apt-get update                                         \
  && apt-get install -qy                                    \
         build-essential                                    \
@@ -84,9 +84,7 @@ RUN girder-worker-config set celery broker "amqp://guest@broker" \
 
 RUN cd /girder                             \
  && npm install -g grunt-cli               \
- && npm cache clear                        \
- && npm install --production --unsafe-perm \
- && npm cache clear
+ && npm install --production --unsafe-perm
 
 ADD gaia                /girder/gaia
 ADD minerva             /girder-components/plugins/minerva
