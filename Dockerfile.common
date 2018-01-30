@@ -69,7 +69,8 @@ RUN mkdir -p /girder-components/plugins
 
 ADD girder /girder
 
-RUN pip install -e /girder[plugins]                            \
+RUN cd /girder                                                 \
+ && pip install -e /girder[plugins]                            \
  && pip install -r /girder/requirements-dev.txt                \
  && pip install -e /girder/clients/python                      \
  && pip install ansible                                        \
