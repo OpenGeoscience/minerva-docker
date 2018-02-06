@@ -131,6 +131,9 @@
             level: 0
             pattern: "@"
 
+      - key: "core.registration_policy"
+        value: "closed"
+
   - name: Restart Girder Server
     girder:
       host: "{{ ghost }}"
