@@ -206,7 +206,7 @@ minervaEvents.on('g:appload.after', function () {
 
     function data_exchange_handler() {
         BSVE.api.exchange.receive(function (data) {
-            events.trigger('m:addExternalGeoJSON', {
+            minervaEvents.trigger('m:addExternalGeoJSON', {
                 name: data.name || 'Imported',
                 data: data
             });
