@@ -72,7 +72,7 @@
         name: "Local"
         type: "filesystem"
         current: true
-        root: "/local-filesystem"
+        root: "/local-assetstore"
       state: present
 
   - name: Activate Girder Plugins
