@@ -80,8 +80,7 @@ ADD girder_worker /girder_worker
 RUN pip install -e /girder_worker            \
  && pip install -e /girder_worker[girder_io]
 
-RUN girder-worker-config set celery broker "amqp://guest@broker" \
- && girder-worker-config set girder_worker plugins_enabled girder_io
+COPY etc/worker.local.cfg /girder_worker/girder_worker/worker.local.cfg
 
 RUN cd /girder                             \
  && npm install -g grunt-cli               \
