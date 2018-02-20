@@ -1,6 +1,11 @@
 FROM jbeezley/girder:1.7ubuntu
 RUN add-apt-repository ppa:ubuntugis/ppa
 RUN apt update
+RUN apt-get update                                         \
+ && apt-get install -qy curl                               \
+ && curl -sL https://deb.nodesource.com/setup_8.x | bash - \
+ && apt-get update                                         \
+ && apt-get install -qy nodejs
 RUN apt install -y python-gdal libgdal-dev
 ENV CPLUS_INCLUDE_PATH=/usr/include/gdal
 ENV C_INCLUDE_PATH=/usr/include/gdal
