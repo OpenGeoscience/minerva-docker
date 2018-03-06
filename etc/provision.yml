@@ -87,7 +87,7 @@
         - jobs
         - worker
         - database_assetstore
-        - girder_ktile
+        - large_image
         - minerva
       state: present
 

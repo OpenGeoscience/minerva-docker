@@ -7,9 +7,9 @@
 [submodule "database_assetstore"]
 	path = database_assetstore
 	url = https://github.com/OpenGeoscience/database_assetstore.git
-[submodule "girder_ktile"]
-	path = girder_ktile
-	url = https://github.com/OpenGeoscience/girder_ktile.git
+[submodule "large_image"]
+	path = large_image
+	url = https://github.com/girder/large_image.git
 [submodule "girder"]
 	path = girder
 	url = git://github.com/girder/girder.git
