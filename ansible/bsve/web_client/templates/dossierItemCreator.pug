@@ -1,0 +1,28 @@
+.m-dossier-item-info.modal-dialog.modal-sm
+  .modal-content
+    form#m-postgres.modal-form(role="form")
+      .modal-header
+        button.close(data-dismiss="modal", aria-hidden="true", type="button") &times;
+        h4.modal-title
+          | Dossier item info
+      .modal-body
+          .row
+            .col-xs-10
+              .form-group.form-group-sm(class=validation.titleRequired?'has-error':'')
+                label
+                  | Title
+                  span.text-danger *
+                input.title.form-control(type='text', value=title)
+                if validation.titleRequired
+                  span.help-block Required
+              .form-group.form-group-sm
+                label Location
+                input.location.form-control(type='text', value=location)
+              .form-group.form-group-sm
+                label Occurence
+                input.occurence.form-control(type='text', value=occurence)
+              .form-group.form-group-sm
+                label Disease
+                input.disease.form-control(type='text', value=disease)
+      .modal-footer
+        button.ok.btn.btn-sm.btn-primary(type='submit') OK
