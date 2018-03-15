@@ -39,7 +39,7 @@ services:
       "--provision",
         "minerva",
         "database_assetstore",
-        "girder_ktile",
+        "large_image",
         "bsve"
     ]
 

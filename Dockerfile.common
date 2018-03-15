@@ -30,6 +30,7 @@ RUN apt-get update                                         \
         openssl                                            \
         python                                             \
         python-pip                                         \
+        python-tk                                          \
         wget                                               \
         zlib1g-dev                                         \
  && apt-get build-dep -qy                                  \
@@ -89,10 +90,10 @@ RUN cd /girder                             \
 ADD gaia                /girder/gaia
 ADD minerva             /girder-components/plugins/minerva
 ADD database_assetstore /girder-components/plugins/database_assetstore
-ADD girder_ktile        /girder-components/plugins/girder_ktile
+ADD large_image        /girder-components/plugins/large_image
 ADD ansible/bsve        /girder-components/plugins/bsve
 RUN girder-install plugin -f /girder-components/plugins/database_assetstore
-RUN girder-install plugin -f /girder-components/plugins/girder_ktile
+RUN girder-install plugin -f /girder-components/plugins/large_image
 RUN girder-install plugin -f /girder-components/plugins/bsve
 RUN girder-install plugin -f /girder-components/plugins/minerva
 
@@ -100,10 +101,15 @@ RUN pip install -e /girder/gaia                             \
  && pip install -r /girder/gaia/requirements.txt            \
  && pip install -e /girder-components/plugins/minerva
 
+RUN pip install numpy==1.10.2                                     \
+ && cd /girder-components/plugins/large_image                     \
+ && python setup.py install                                       \
+ && pip install -e /girder-components/plugins/large_image[mapnik]
+
 RUN girder-install web --dev --plugins \
 autojoin,\
 database_assetstore,\
-girder_ktile,\
+large_image,\
 minerva,\
 bsve
 
