@@ -51,10 +51,10 @@ const DossierItemCreator = View.extend({
             this.disease = e.target.value;
         }
     },
-    initialize(options) {
-        this.image = options.image;
-        this.title = '';
-        this.location = '';
+    initialize(settings) {
+        this.image = settings.image;
+        this.title = settings.title ? settings.title : '';
+        this.location = settings.location ? settings.location : '';
         this.occurence = '';
         this.disease = '';
         this.validation = {

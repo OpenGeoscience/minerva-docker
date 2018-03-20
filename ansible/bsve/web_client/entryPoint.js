@@ -402,8 +402,26 @@ wrap(MapPanel, 'render', function (render) {
 
 ScreenshotResultWidget.prototype.events = Object.assign(ScreenshotResultWidget.prototype.events, {
     'click button.export-to-dossier': function (e) {
+        var datasetCollection = this.parentView.collection;
         this.$el.modal('hide').one('hidden.bs.modal', () => {
+            // Build a title from visible datasets
+            var visibleDatasetNames = datasetCollection.models.filter((dataset) => dataset.get('displayed') && dataset.get('visible') && dataset.get('opacity')).sort((a, b) => b.get('stack') - a.get('stack')).map((dataset) => dataset.get('name'));
+            var location = visibleDatasetNames.join(', ')
+            var namesToShow = [];
+            var length = 0;
+            for (let name of visibleDatasetNames) {
+                if (length <= 15) {
+                    length += name.length;
+                    namesToShow.push(name);
+                }
+            }
+            var title = namesToShow.join(', ');
+            if (visibleDatasetNames.length > namesToShow.length) {
+                title += `, and ${visibleDatasetNames.length - namesToShow.length} more`;
+            }
             new DossierItemCreator({
+                title: title,
+                location: location,
                 image: this.image,
                 el: $('#g-dialog-container'),
                 parentView: this
