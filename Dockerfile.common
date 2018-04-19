@@ -87,7 +87,6 @@ RUN cd /girder                             \
  && npm install -g grunt-cli               \
  && npm install --production --unsafe-perm
 
-ADD gaia                /girder/gaia
 ADD minerva             /girder-components/plugins/minerva
 ADD database_assetstore /girder-components/plugins/database_assetstore
 ADD large_image        /girder-components/plugins/large_image
@@ -97,9 +96,7 @@ RUN girder-install plugin -f /girder-components/plugins/large_image
 RUN girder-install plugin -f /girder-components/plugins/bsve
 RUN girder-install plugin -f /girder-components/plugins/minerva
 
-RUN pip install -e /girder/gaia                             \
- && pip install -r /girder/gaia/requirements.txt            \
- && pip install -e /girder-components/plugins/minerva
+RUN pip install --process-dependency-link -e /girder-components/plugins/minerva
 
 RUN pip install numpy==1.10.2                                     \
  && cd /girder-components/plugins/large_image                     \
