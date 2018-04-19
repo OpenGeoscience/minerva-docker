@@ -78,11 +78,6 @@ RUN cd /girder                                                 \
  && pip install ansible                                        \
  && ansible-galaxy install -p /etc/ansible/roles girder.girder
 
-ADD girder_worker /girder_worker
-RUN pip install -e /girder_worker[girder_io]
-
-COPY etc/worker.local.cfg /girder_worker/girder_worker/worker.local.cfg
-
 RUN cd /girder                             \
  && npm install -g grunt-cli               \
  && npm install --production --unsafe-perm
@@ -101,6 +96,8 @@ RUN girder-install plugin -f /girder-components/plugins/bsve
 ADD minerva             /girder-components/plugins/minerva
 RUN pip install --process-dependency-link -e /girder-components/plugins/minerva \
  && girder-install plugin -f /girder-components/plugins/minerva
+
+COPY etc/worker.local.cfg /usr/local/lib/python2.7/dist-packages/girder_worker/worker.local.cfg
 
 RUN girder-install web --dev --plugins \
 autojoin,\

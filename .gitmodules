@@ -10,6 +10,3 @@
 [submodule "girder"]
 	path = girder
 	url = git://github.com/girder/girder.git
-[submodule "girder_worker"]
-	path = girder_worker
-	url = git://github.com/girder/girder_worker.git
