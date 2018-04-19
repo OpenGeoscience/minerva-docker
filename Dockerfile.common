@@ -5,11 +5,10 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update                                         \
  && apt-get install -qy                                    \
+        curl                                               \
         software-properties-common                         \
         python-software-properties                         \
- && apt-get update                                         \
  && add-apt-repository ppa:ubuntugis/ppa                   \
- && apt-get install -qy curl                               \
  && curl -sL https://deb.nodesource.com/setup_8.x | bash - \
  && apt-get update                                         \
  && apt-get install -qy                                    \
@@ -35,10 +34,12 @@ RUN apt-get update                                         \
         zlib1g-dev                                         \
  && apt-get build-dep -qy                                  \
         gdal                                               \
- && pip install -U pip                                     \
- && pip install setuptools                                 \
  && apt-get clean                                          \
  && rm -rf /var/lib/apt/lists/*
+# Upgrade pip as a separate command from upgrading setuptools.  If the major
+# version of pip changes, these seems to be necessary.
+RUN pip install --no-cache-dir -U pip
+RUN pip install --no-cache-dir -U setuptools
 
 RUN echo 'NODE VERSION' \
  && echo '------------' \
@@ -78,8 +79,7 @@ RUN cd /girder                                                 \
  && ansible-galaxy install -p /etc/ansible/roles girder.girder
 
 ADD girder_worker /girder_worker
-RUN pip install -e /girder_worker            \
- && pip install -e /girder_worker[girder_io]
+RUN pip install -e /girder_worker[girder_io]
 
 COPY etc/worker.local.cfg /girder_worker/girder_worker/worker.local.cfg
 
@@ -87,21 +87,20 @@ RUN cd /girder                             \
  && npm install -g grunt-cli               \
  && npm install --production --unsafe-perm
 
-ADD minerva             /girder-components/plugins/minerva
 ADD database_assetstore /girder-components/plugins/database_assetstore
-ADD large_image        /girder-components/plugins/large_image
-ADD ansible/bsve        /girder-components/plugins/bsve
 RUN girder-install plugin -f /girder-components/plugins/database_assetstore
-RUN girder-install plugin -f /girder-components/plugins/large_image
-RUN girder-install plugin -f /girder-components/plugins/bsve
-RUN girder-install plugin -f /girder-components/plugins/minerva
 
-RUN pip install --process-dependency-link -e /girder-components/plugins/minerva
-
+ADD large_image         /girder-components/plugins/large_image
 RUN pip install numpy==1.10.2                                     \
- && cd /girder-components/plugins/large_image                     \
- && python setup.py install                                       \
- && pip install -e /girder-components/plugins/large_image[mapnik]
+ && pip install -e /girder-components/plugins/large_image[mapnik] \
+ && girder-install plugin -f /girder-components/plugins/large_image
+
+ADD ansible/bsve        /girder-components/plugins/bsve
+RUN girder-install plugin -f /girder-components/plugins/bsve
+
+ADD minerva             /girder-components/plugins/minerva
+RUN pip install --process-dependency-link -e /girder-components/plugins/minerva \
+ && girder-install plugin -f /girder-components/plugins/minerva
 
 RUN girder-install web --dev --plugins \
 autojoin,\
