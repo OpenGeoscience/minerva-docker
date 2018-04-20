@@ -1,9 +1,6 @@
 [submodule "minerva"]
 	path = minerva
 	url = https://github.com/Kitware/minerva.git
-[submodule "gaia"]
-	path = gaia
-	url = https://github.com/OpenDataAnalytics/gaia.git
 [submodule "database_assetstore"]
 	path = database_assetstore
 	url = https://github.com/OpenGeoscience/database_assetstore.git
@@ -13,6 +10,3 @@
 [submodule "girder"]
 	path = girder
 	url = git://github.com/girder/girder.git
-[submodule "girder_worker"]
-	path = girder_worker
-	url = git://github.com/girder/girder_worker.git
