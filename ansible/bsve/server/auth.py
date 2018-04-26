@@ -60,6 +60,7 @@ class Authentication(Resource):
         if data is None:
             raise RestException('Invalid BSVE login', 403)
 
+        email = email.lower()
         User = ModelImporter.model('user')
         user = User.findOne({'email': email})
 
