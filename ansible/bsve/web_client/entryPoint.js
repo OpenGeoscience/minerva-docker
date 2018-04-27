@@ -7,6 +7,7 @@ import { setCurrentUser, setCurrentToken } from 'girder/auth';
 import UserModel from 'girder/models/UserModel';
 import BsveDatasetModel from './models';
 import './stylesheets/panelGroup.styl';
+import DossierItemCreator from './views/DossierItemCreator';
 
 const minervaEvents = minerva.events;
 const SessionModel = minerva.models.SessionModel;
@@ -15,6 +16,7 @@ const App = minerva.App;
 const LayersPanel = minerva.views.body.LayersPanel;
 const DataPanel = minerva.views.body.DataPanel;
 const MapPanel = minerva.views.map.MapPanel;
+const ScreenshotResultWidget = minerva.views.widgets.ScreenshotResultWidget;
 
 
 minervaEvents.on('g:appload.after', function () {
@@ -330,7 +332,7 @@ minervaEvents.on('g:appload.after', function () {
                 authTicket = BSVE.api.authTicket(), // harbinger-auth-ticket
                 tenancy = BSVE.api.tenancy(), // logged in user's tenant
                 dismissed = false; // used for dismissing modal alert for tagging confirmation
-            console.log('GeoViz 0.0.49');
+            console.log('GeoViz');
             console.log(user);
 
             // set auth cookie for bsve proxy endpoints
@@ -358,7 +360,7 @@ minervaEvents.on('g:appload.after', function () {
                 bsve_search_handler
             ).then(
                 data_exchange_handler
-            ).then(undefined , function () {
+            ).then(undefined, function () {
                 remove_spinner();
                 error_handler();
             });
@@ -396,4 +398,40 @@ wrap(DataPanel, 'render', function (render) {
 wrap(MapPanel, 'render', function (render) {
     render.call(this);
     this.colorLegend.position({ right: 10, top: 10 });
+});
+
+ScreenshotResultWidget.prototype.events = Object.assign(ScreenshotResultWidget.prototype.events, {
+    'click button.export-to-dossier': function (e) {
+        var datasetCollection = this.parentView.collection;
+        this.$el.modal('hide').one('hidden.bs.modal', () => {
+            // Build a title from visible datasets
+            var visibleDatasetNames = datasetCollection.models.filter((dataset) => dataset.get('displayed') && dataset.get('visible') && dataset.get('opacity')).sort((a, b) => b.get('stack') - a.get('stack')).map((dataset) => dataset.get('name'));
+            var location = visibleDatasetNames.join(', ')
+            var namesToShow = [];
+            var length = 0;
+            for (let name of visibleDatasetNames) {
+                if (length <= 15) {
+                    length += name.length;
+                    namesToShow.push(name);
+                }
+            }
+            var title = namesToShow.join(', ');
+            if (visibleDatasetNames.length > namesToShow.length) {
+                title += `, and ${visibleDatasetNames.length - namesToShow.length} more`;
+            }
+            new DossierItemCreator({
+                title: title,
+                location: location,
+                image: this.image,
+                el: $('#g-dialog-container'),
+                parentView: this
+            }).render();
+        });
+    }
+});
+
+wrap(ScreenshotResultWidget, 'render', function (render) {
+    render.call(this);
+    this.$el.find('.modal-footer').append('<button type="button" class="export-to-dossier btn btn-sm btn-primary"><i class="icon-export"></i>BSVE dossier</button>');
+    return this;
 });
