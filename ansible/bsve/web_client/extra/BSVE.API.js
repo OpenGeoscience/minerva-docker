@@ -1997,7 +1997,7 @@ var BSVE = BSVE || {};
 	function jqLoaded()
 	{
 		// load datepicker
-		$.getScript('//d2i1npmup0vp0c.cloudfront.net/bootstrap-datepicker-1.0.js', function(){
+		$.getScript('//cdn.bsvecosystem.net/bootstrap-datepicker-1.0.js', function(){
 			_ready = true;
 			searchbar();
 			while ( _msgs.length )
