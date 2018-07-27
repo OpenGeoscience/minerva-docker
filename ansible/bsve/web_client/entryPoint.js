@@ -181,7 +181,7 @@ minervaEvents.on('g:appload.after', function () {
                                     console.log('Creating a dataset for ' + sourceType + ' of length ' + geojsonData.features.length);
                                     var gjObj = {
                                         'geojson': geojsonData,
-                                        'name': sourceType + ' - ' + geojsonData.features.length
+                                        'name': query.term + ' - ' + sourceType + ' - ' + geojsonData.features.length
                                     }
                                     sourceTypeFeatures[sourceType] = geojsonData.features.length;
                                     minervaEvents.trigger('m:addExternalGeoJSON', {
