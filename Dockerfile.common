@@ -68,6 +68,7 @@ RUN pip install GDAL==$(gdal-config --version)
 RUN mkdir -p /girder-components/plugins
 
 ADD girder /girder
+RUN sed -i "s|'boto3',|'boto3>=1.7,<1.8',\n    'botocore<1.11.0', |g" /girder/setup.py
 
 RUN cd /girder                                                 \
  && pip install -e /girder[plugins]                            \
